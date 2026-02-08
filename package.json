@@ -6,9 +6,9 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
-    "export": "next export",
-    "build:static": "next build && next export",
-    "lint": "eslint"
+    "lint": "eslint",
+    "preview": "npm run build && wrangler pages dev out",
+    "deploy": "npm run build && wrangler pages deploy out"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -24,6 +24,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.63.0"
   }
 }
