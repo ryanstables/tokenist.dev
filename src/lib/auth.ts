@@ -6,7 +6,7 @@ export interface AuthResponse {
     userId: string
     email: string
     displayName?: string
-    orgId?: string
+    orgId: string | null
   }
   token: string
 }
