@@ -2,3 +2,7 @@
 name = "tokenist"
 compatibility_date = "2025-01-01"
 pages_build_output_dir = "out"
+
+[vars]
+NEXT_PUBLIC_API_URL=https://api.tokenist.dev
+NEXT_PUBLIC_DASHBOARD_URL=https://dashboard.tokenist.dev
