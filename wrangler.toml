@@ -1,7 +1,7 @@
 # wrangler.toml
 name = "tokenist-dev"
 compatibility_date = "2025-01-01"
-pages_build_output_dir = "out"
+pages_build_output_dir = ".vercel/output/static"
 
 [vars]
 NEXT_PUBLIC_API_URL="https://api.tokenist.dev"
