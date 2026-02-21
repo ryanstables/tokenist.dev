@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
+import { Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
 // Static export: no server-only APIs (cookies, headers, etc.), no ISR, no API routes
 export const dynamic = "force-static";
+
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Tokenist — Guardrails as a Service for Realtime AI APIs",
@@ -19,7 +25,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="grain">
+    <html lang="en" className={`${robotoMono.variable} grain`}>
       <body className="antialiased min-h-screen">
         {children}
       </body>
