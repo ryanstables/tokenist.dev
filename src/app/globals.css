@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #0a0c10;
-  --bg-elevated: #111318;
-  --bg-card: #161a22;
-  --fg: #e6e9ef;
-  --fg-muted: #8b92a0;
-  --accent: #22d3c9;
-  --accent-dim: #0d9488;
-  --border: #252a34;
+  --bg: #ffffff;
+  --bg-elevated: #f0fdf4;
+  --bg-card: #ffffff;
+  --fg: #052e16;
+  --fg-muted: #4b7a62;
+  --accent: #16a34a;
+  --accent-dim: #15803d;
+  --accent-light: #dcfce7;
+  --border: #bbf7d0;
+  --border-subtle: #e5e7eb;
   --success: #22c55e;
-  --warning: #eab308;
+  --warning: #ca8a04;
 }
 
 @theme inline {
@@ -21,7 +23,9 @@
   --color-fg-muted: var(--fg-muted);
   --color-accent: var(--accent);
   --color-accent-dim: var(--accent-dim);
+  --color-accent-light: var(--accent-light);
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --font-sans: var(--font-roboto-mono), monospace;
   --font-display: var(--font-roboto-mono), monospace;
   --font-mono: var(--font-roboto-mono), monospace;
@@ -43,16 +47,6 @@ body {
 
 .font-mono {
   font-family: var(--font-mono);
-}
-
-/* Subtle grain overlay for depth */
-.grain::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
 }
 
 /* Code block styling */

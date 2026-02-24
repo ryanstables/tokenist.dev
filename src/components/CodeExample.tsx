@@ -1,8 +1,11 @@
 export function CodeExample() {
   return (
-    <section id="code" className="scroll-mt-20 border-b border-[var(--border)] bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
+    <section id="code" className="scroll-mt-20 bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
+          <span className="mb-4 inline-block rounded-full border border-[var(--border)] bg-[var(--accent-light)] px-4 py-1 text-sm font-medium text-[var(--accent-dim)]">
+            Integration
+          </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
             Minimal integration
           </h2>
@@ -11,12 +14,17 @@ export function CodeExample() {
             headers. No SDK lock-in.
           </p>
         </div>
-        <div className="mt-12 grid gap-8 lg:grid-cols-2">
-          <div>
-            <h3 className="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]">
-              Connect to proxy (WebSocket)
-            </h3>
-            <pre className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 font-mono text-sm text-[var(--fg)]">
+        <div className="mt-12 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] px-4 py-3 bg-[var(--bg-elevated)]">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
+              <span className="h-2.5 w-2.5 rounded-full bg-yellow-300" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[var(--success)]" />
+              <span className="ml-3 font-mono text-xs font-medium text-[var(--fg-muted)] uppercase tracking-wider">
+                Connect to proxy (WebSocket)
+              </span>
+            </div>
+            <pre className="overflow-x-auto p-5 font-mono text-sm text-[var(--fg)]">
               <code>{`const ws = new WebSocket(
   'wss://proxy.example.com/v1/realtime?model=gpt-4o-realtime-preview',
   {
@@ -28,11 +36,16 @@ export function CodeExample() {
 );`}</code>
             </pre>
           </div>
-          <div>
-            <h3 className="mb-3 font-display text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]">
-              OpenAI client with baseUrl
-            </h3>
-            <pre className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--bg)] p-4 font-mono text-sm text-[var(--fg)]">
+          <div className="rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] px-4 py-3 bg-[var(--bg-elevated)]">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
+              <span className="h-2.5 w-2.5 rounded-full bg-yellow-300" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[var(--success)]" />
+              <span className="ml-3 font-mono text-xs font-medium text-[var(--fg-muted)] uppercase tracking-wider">
+                OpenAI client with baseUrl
+              </span>
+            </div>
+            <pre className="overflow-x-auto p-5 font-mono text-sm text-[var(--fg)]">
               <code>{`import OpenAI from 'openai';
 
 const client = new OpenAI({
@@ -49,10 +62,12 @@ const realtime = await client.beta.realtime.connect({
             </pre>
           </div>
         </div>
-        <p className="mt-6 text-center text-sm text-[var(--fg-muted)]">
-          Guardrails apply automatically. Over limit or blocked? Connection
-          closes with a defined code (4003, 4004) so your client can handle it.
-        </p>
+        <div className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--accent-light)] px-6 py-4 text-center">
+          <p className="text-sm text-[var(--accent-dim)]">
+            Guardrails apply automatically. Over limit or blocked? Connection
+            closes with a defined code (4003, 4004) so your client can handle it.
+          </p>
+        </div>
       </div>
     </section>
   );

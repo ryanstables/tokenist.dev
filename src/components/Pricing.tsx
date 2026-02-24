@@ -74,9 +74,12 @@ const tiers = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="scroll-mt-20 border-b border-[var(--border)] bg-[var(--bg)] py-20 sm:py-24 lg:py-28">
+    <section id="pricing" className="scroll-mt-20 bg-white py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
+          <span className="mb-4 inline-block rounded-full border border-[var(--border)] bg-[var(--accent-light)] px-4 py-1 text-sm font-medium text-[var(--accent-dim)]">
+            Pricing
+          </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
             Simple, usage-based pricing
           </h2>
@@ -88,21 +91,21 @@ export function Pricing() {
           {tiers.map((tier) => (
             <div
               key={tier.name}
-              className={`flex flex-col rounded-xl border p-6 ${
+              className={`relative flex flex-col rounded-2xl border p-6 transition-shadow hover:shadow-md ${
                 tier.highlighted
-                  ? "border-[var(--accent)] bg-[var(--accent)]/5"
-                  : "border-[var(--border)] bg-[var(--bg-card)]"
+                  ? "border-[var(--accent)] bg-[var(--accent)]/5 shadow-md"
+                  : "border-[var(--border-subtle)] bg-white"
               }`}
             >
               {tier.highlighted && (
-                <span className="mb-4 inline-block w-fit rounded-full bg-[var(--accent)]/20 px-3 py-1 text-xs font-semibold text-[var(--accent)]">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)] px-3 py-1 text-xs font-semibold text-white shadow-sm">
                   Popular
                 </span>
               )}
               <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
                 {tier.name}
               </h3>
-              <p className="mt-1 text-sm text-[var(--fg-muted)]">{tier.tagline}</p>
+              <p className="mt-1 text-xs text-[var(--fg-muted)]">{tier.tagline}</p>
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="font-display text-3xl font-bold text-[var(--fg)]">
                   {tier.price}
@@ -110,15 +113,17 @@ export function Pricing() {
                 <span className="text-[var(--fg-muted)]">{tier.period}</span>
               </div>
               {tier.annual && (
-                <p className="mt-1 text-sm text-[var(--fg-muted)]">
+                <p className="mt-1 text-xs text-[var(--fg-muted)]">
                   {tier.annual}
                 </p>
               )}
-              <p className="mt-2 text-sm font-medium text-[var(--fg)]">
-                {tier.quota}
-              </p>
-              <p className="text-xs text-[var(--fg-muted)]">Overage: {tier.overage}</p>
-              <ul className="mt-6 flex-1 space-y-2 text-sm text-[var(--fg-muted)]">
+              <div className="mt-3 rounded-lg bg-[var(--bg-elevated)] px-3 py-2">
+                <p className="text-sm font-medium text-[var(--fg)]">
+                  {tier.quota}
+                </p>
+                <p className="text-xs text-[var(--fg-muted)]">Overage: {tier.overage}</p>
+              </div>
+              <ul className="mt-5 flex-1 space-y-2 text-sm text-[var(--fg-muted)]">
                 {tier.features.map((f) => (
                   <li key={f} className="flex items-start gap-2">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
@@ -128,10 +133,10 @@ export function Pricing() {
               </ul>
               <Link
                 href={tier.href}
-                className={`mt-6 block rounded-lg py-2.5 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
+                className={`mt-6 block rounded-xl py-2.5 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
                   tier.highlighted
-                    ? "bg-[var(--accent)] text-[var(--bg)]"
-                    : "border border-[var(--border)] text-[var(--fg)] hover:border-[var(--accent-dim)]"
+                    ? "bg-[var(--accent)] text-white shadow-sm"
+                    : "border border-[var(--border)] text-[var(--fg)] hover:border-[var(--accent)]"
                 }`}
               >
                 {tier.cta}
@@ -139,25 +144,32 @@ export function Pricing() {
             </div>
           ))}
         </div>
-        <div className="mt-12 rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center">
-          <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
-            Enterprise
-          </h3>
-          <p className="mt-2 text-sm text-[var(--fg-muted)]">
-            Custom quota (1B+), dedicated support, SLA, onboarding. Custom
-            limits for telemetry retention and org governance.
-          </p>
-          <p className="mt-2 text-sm font-medium text-[var(--fg)]">
-            Typically $20,000+/yr — custom quotes based on volume and needs.
-          </p>
-          <Link
-            href="#"
-            className="mt-4 inline-block rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--fg)] hover:border-[var(--accent-dim)]"
-          >
-            Contact sales
-          </Link>
+
+        {/* Enterprise */}
+        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6 sm:p-8">
+          <div className="sm:flex sm:items-center sm:justify-between sm:gap-8">
+            <div>
+              <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
+                Enterprise
+              </h3>
+              <p className="mt-1 text-sm text-[var(--fg-muted)]">
+                Custom quota (1B+), dedicated support, SLA, onboarding. Custom
+                limits for telemetry retention and org governance.
+              </p>
+              <p className="mt-2 text-sm font-medium text-[var(--fg)]">
+                Typically $20,000+/yr — custom quotes based on volume and needs.
+              </p>
+            </div>
+            <Link
+              href="#"
+              className="mt-4 inline-block shrink-0 rounded-xl border border-[var(--border)] px-6 py-2.5 text-sm font-medium text-[var(--fg)] transition-colors hover:border-[var(--accent)] sm:mt-0"
+            >
+              Contact sales
+            </Link>
+          </div>
         </div>
-        <p className="mt-8 text-center text-sm text-[var(--fg-muted)]">
+
+        <p className="mt-6 text-center text-sm text-[var(--fg-muted)]">
           Optional add-ons: Premium Alerts & Automation +$49/mo, Dedicated
           Support/CSM +$150/mo, Longer Data Retention (360 days) +$100/mo.
         </p>

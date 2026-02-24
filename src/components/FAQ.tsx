@@ -33,9 +33,12 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-20 border-b border-[var(--border)] bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
+    <section id="faq" className="scroll-mt-20 bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
+          <span className="mb-4 inline-block rounded-full border border-[var(--border)] bg-[var(--accent-light)] px-4 py-1 text-sm font-medium text-[var(--accent-dim)]">
+            FAQ
+          </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
             Frequently asked questions
           </h2>
@@ -43,29 +46,31 @@ export function FAQ() {
             Common questions about Tokenist and realtime AI guardrails.
           </p>
         </div>
-        <div className="mt-12 space-y-2">
+        <div className="mt-12 space-y-3">
           {faqs.map((faq, i) => (
             <div
               key={faq.q}
-              className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] overflow-hidden"
+              className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm"
             >
               <button
                 type="button"
-                className="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-[var(--fg)] hover:bg-[var(--bg-elevated)]/50 transition-colors"
+                className="flex w-full items-center justify-between px-5 py-4 text-left font-medium text-[var(--fg)] transition-colors hover:bg-[var(--bg-elevated)]"
                 onClick={() => setOpen(open === i ? null : i)}
                 aria-expanded={open === i}
               >
-                {faq.q}
+                <span>{faq.q}</span>
                 <span
-                  className={`ml-2 shrink-0 text-[var(--fg-muted)] transition-transform ${
-                    open === i ? "rotate-180" : ""
+                  className={`ml-4 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-[var(--fg-muted)] transition-transform ${
+                    open === i ? "rotate-180 border-[var(--accent)] bg-[var(--accent-light)] text-[var(--accent)]" : ""
                   }`}
                 >
-                  ▼
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </span>
               </button>
               {open === i && (
-                <div className="border-t border-[var(--border)] px-5 py-4 text-sm text-[var(--fg-muted)]">
+                <div className="border-t border-[var(--border-subtle)] px-5 py-4 text-sm leading-relaxed text-[var(--fg-muted)]">
                   {faq.a}
                 </div>
               )}
