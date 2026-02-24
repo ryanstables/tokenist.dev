@@ -64,9 +64,21 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="#"
-          className="font-display text-xl font-bold tracking-tight text-[var(--accent)]"
+          className="flex items-center text-[var(--accent)]"
+          aria-label="Tokenist"
         >
-          Tokenist
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 200 200"
+            className="h-8 w-8 flex-shrink-0"
+            aria-hidden
+          >
+            <g transform="translate(60,65)">
+              <rect fill="currentColor" height="18" width="80" y="0" x="0" />
+              <rect fill="currentColor" height="18" width="56" y="38" x="12" />
+              <rect fill="currentColor" height="18" width="32" y="76" x="24" />
+            </g>
+          </svg>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
