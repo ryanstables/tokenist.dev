@@ -7,8 +7,7 @@ export function Hero() {
     <section className="bg-[var(--bg)]" style={{ padding: "0.75rem" }}>
       {/* Inner container — inset from section edges to show the gutter */}
       <div
-        className="relative overflow-hidden rounded-2xl"
-        style={{ height: "calc(100vh - 4rem - 1.5rem)", minHeight: "560px" }}
+        className="relative overflow-hidden rounded-2xl h-[calc(100vh-1.5rem)] md:h-[calc(100vh-5.5rem)] min-h-[560px]"
       >
         {/* Background image */}
         <Image
