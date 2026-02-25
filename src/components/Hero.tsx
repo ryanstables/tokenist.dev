@@ -29,7 +29,19 @@ export function Hero() {
           {/* TOP — on narrow: badge aligned with hamburger (top-6 + h-10 = 4rem); on md+: badge + description */}
           <div className="flex h-16 shrink-0 items-center md:h-auto md:max-w-2xl md:block">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-white/90">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--success)]" />
+              <span className="hidden md:block h-1.5 w-1.5 rounded-full bg-[var(--success)]" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 200 200"
+                className="h-5 w-5 flex-shrink-0 text-white md:hidden"
+                aria-hidden
+              >
+                <g transform="translate(60,65)">
+                  <rect fill="currentColor" height="18" width="80" y="0" x="0" />
+                  <rect fill="currentColor" height="18" width="56" y="38" x="12" />
+                  <rect fill="currentColor" height="18" width="32" y="76" x="24" />
+                </g>
+              </svg>
               <span className="md:hidden">Tokenist.</span>
               <span className="hidden md:inline">Guardrails as a Service</span>
             </span>
