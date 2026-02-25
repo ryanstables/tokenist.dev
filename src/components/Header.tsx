@@ -60,7 +60,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 border-b border-[var(--border)] bg-white/95 backdrop-blur-md">
+    <header className="hidden md:block sticky top-0 left-0 right-0 z-50 border-b border-[var(--border)] bg-white/95 backdrop-blur-md">
       {/* 3-column grid: logo/burger | nav (truly centered) | buttons */}
       <div className="grid h-16 grid-cols-3 items-center px-11 sm:px-[3.75rem] lg:px-[4.75rem]">
 

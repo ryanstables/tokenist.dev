@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
 import { ProductOverview } from "@/components/ProductOverview";
@@ -14,6 +15,7 @@ export default function Home() {
   return (
     <>
       <Header />
+      <MobileMenu />
       <main>
         <Hero />
         <ProductOverview />
