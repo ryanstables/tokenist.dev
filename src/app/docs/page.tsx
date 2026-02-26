@@ -185,7 +185,7 @@ export default function DocsPage() {
             </section>
             {/* ── HTTP API REFERENCE ──────────────────────────────────────── */}
             <section id="http-api" className="scroll-mt-24">
-              <h2 className="text-2xl font-semibold text-[var(--fg)]">SDK Reference</h2>
+              <h2 className="text-2xl font-semibold text-[var(--fg)]">HTTP API Reference</h2>
               <div className="mt-4 h-px bg-[var(--border)]" />
               <p className="mt-4 text-[var(--fg-muted)] leading-relaxed">
                 All endpoints are authenticated with your API key as a Bearer token.
@@ -226,8 +226,8 @@ export default function DocsPage() {
                     { name: "reason", type: "string", required: false, desc: 'Present when allowed is false. E.g. "User is blocked: Exceeded fair usage".' },
                     { name: "usage.tokens", type: "number", required: false, desc: "Total tokens consumed by this user in the current period." },
                     { name: "usage.costUsd", type: "number", required: false, desc: "Total cost in USD consumed in the current period." },
-                    { name: "remaining.tokens", type: "number", required: false, desc: "Remaining token budget (omitted if no limit set)." },
-                    { name: "remaining.costUsd", type: "number", required: false, desc: "Remaining cost budget in USD (omitted if no limit set)." },
+                    { name: "remaining.tokens", type: "number", required: false, desc: "Remaining token budget. 0 if no token limit is configured." },
+                    { name: "remaining.costUsd", type: "number", required: false, desc: "Remaining cost budget in USD. 0 if no cost limit is configured." },
                   ]}
                 />
 
@@ -273,8 +273,8 @@ export default function DocsPage() {
                     { name: "requestType", type: '"chat" | "realtime" | "embeddings"', required: true, desc: "Type of request." },
                     { name: "inputTokens", type: "number", required: true, desc: "Actual input tokens consumed." },
                     { name: "outputTokens", type: "number", required: true, desc: "Actual output tokens consumed." },
-                    { name: "latencyMs", type: "number", required: false, desc: "Round-trip latency in milliseconds." },
-                    { name: "success", type: "boolean", required: false, desc: "Whether the OpenAI request succeeded. Defaults to true." },
+                    { name: "latencyMs", type: "number", required: true, desc: "Round-trip latency in milliseconds." },
+                    { name: "success", type: "boolean", required: true, desc: "Whether the OpenAI request succeeded." },
                     { name: "feature", type: "string", required: false, desc: "Feature tag, should match the value used in /sdk/check." },
                   ]}
                 />
@@ -534,7 +534,7 @@ interface SdkCheckResponse {
                 <div className="mt-4">
                   <CodeBlock>{`async function openAiWithGuardrails(
   userId: string,
-  messages: ChatMessage[],
+  messages: { role: string; content: string }[],
 ) {
   // 1. Check before the request
   const check = await tokenist.sdk.check({

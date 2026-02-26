@@ -10,7 +10,7 @@ const sections = [
   },
   {
     id: "http-api",
-    label: "SDK Reference",
+    label: "HTTP API Reference",
     children: [
       { id: "endpoint-check", label: "POST /sdk/check" },
       { id: "endpoint-record", label: "POST /sdk/record" },

@@ -63,9 +63,9 @@ export function MobileMenu() {
         aria-label="Toggle menu"
       >
         <div className="flex flex-col gap-[5px]">
-          <span className={`block h-0.5 w-5 ${open ? "bg-[var(--fg)]" : "bg-white"}`} />
-          <span className={`block h-0.5 w-5 ${open ? "bg-[var(--fg)]" : "bg-white"}`} />
-          <span className={`block h-0.5 w-5 ${open ? "bg-[var(--fg)]" : "bg-white"}`} />
+          <span className="block h-0.5 w-5 bg-[var(--fg)]" />
+          <span className="block h-0.5 w-5 bg-[var(--fg)]" />
+          <span className="block h-0.5 w-5 bg-[var(--fg)]" />
         </div>
       </button>
 
