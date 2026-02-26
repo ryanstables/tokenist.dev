@@ -35,7 +35,7 @@ function Step({
   );
 }
 
-function CodeBlock({ children, lang = "json" }: { children: string; lang?: string }) {
+function CodeBlock({ children }: { children: string }) {
   return (
     <pre className="overflow-x-auto rounded-xl bg-[var(--fg)] px-5 py-4 text-sm leading-relaxed text-[var(--accent-light)]">
       <code>{children.trim()}</code>
@@ -99,10 +99,10 @@ export default function DocsPage() {
                 </Step>
 
                 <Step n={2} title="Install the TypeScript SDK">
-                  <CodeBlock lang="bash">{`npm install tokenist-js`}</CodeBlock>
+                  <CodeBlock>{`npm install tokenist-js`}</CodeBlock>
                   <p className="mt-3 text-[var(--fg-muted)]">
                     Or use the HTTP API directly — all endpoints accept standard JSON
-                    over HTTPS.
+                    over HTTPS. No SDK required.
                   </p>
                 </Step>
               </div>
