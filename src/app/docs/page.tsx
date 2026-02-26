@@ -442,7 +442,7 @@ if (!result.allowed) {
 interface SdkCheckResponse {
   allowed: boolean;
   reason?: string;
-  usage?: { tokens: number; costUsd: number };
+  usage: { tokens: number; costUsd: number };
   remaining?: { tokens: number; costUsd: number };
 }`}</CodeBlock>
               </div>
@@ -457,7 +457,7 @@ interface SdkCheckResponse {
                   user&apos;s updated totals and whether they were automatically blocked.
                 </p>
                 <div className="mt-4 space-y-4">
-                  <CodeBlock>{`const { blocked, usage } = await tokenist.sdk.record({
+                  <CodeBlock>{`await tokenist.sdk.record({
   userId: "user_alice",
   model: "gpt-4o",
   requestType: "chat",
@@ -466,11 +466,7 @@ interface SdkCheckResponse {
   latencyMs: Date.now() - startTime,
   success: true,
   feature: "support-chat",
-});
-
-if (blocked) {
-  // User hit their limit mid-session — handle gracefully
-}`}</CodeBlock>
+});`}</CodeBlock>
                 </div>
 
                 <h4 className="mt-6 text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
@@ -482,15 +478,9 @@ if (blocked) {
   requestType: "chat" | "realtime" | "embeddings";
   inputTokens: number;
   outputTokens: number;
-  latencyMs?: number;
-  success?: boolean;
+  latencyMs: number;
+  success: boolean;
   feature?: string;
-}
-
-interface SdkRecordResponse {
-  recorded: boolean;
-  usage?: { tokens: number; costUsd: number };
-  blocked: boolean;
 }`}</CodeBlock>
               </div>
 
