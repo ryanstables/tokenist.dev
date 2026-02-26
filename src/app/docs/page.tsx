@@ -2,18 +2,7 @@ import { Header } from "@/components/Header";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
-import { createHighlighter } from "shiki";
-
-let _highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
-function getHighlighter() {
-  if (!_highlighterPromise) {
-    _highlighterPromise = createHighlighter({
-      themes: ["github-dark"],
-      langs: ["typescript", "bash", "json"],
-    });
-  }
-  return _highlighterPromise;
-}
+import { getSingletonHighlighter } from "shiki";
 
 export const dynamic = "force-static";
 
@@ -54,7 +43,10 @@ async function CodeBlock({
   children: string;
   lang?: string;
 }) {
-  const highlighter = await getHighlighter();
+  const highlighter = await getSingletonHighlighter({
+    themes: ["github-dark"],
+    langs: ["typescript", "bash", "json"],
+  });
   const html = highlighter.codeToHtml(children.trim(), {
     lang,
     theme: "github-dark",
