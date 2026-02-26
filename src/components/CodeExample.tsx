@@ -1,3 +1,29 @@
+import { CopyCodeButton } from "@/components/CopyCodeButton";
+
+const wsSnippet = `const ws = new WebSocket(
+  'wss://proxy.example.com/v1/realtime?model=gpt-4o-realtime-preview',
+  {
+    headers: {
+      'x-user-id': 'user_abc123',
+      'x-org-id': 'org_xyz',  // optional
+    },
+  }
+);`;
+
+const openaiSnippet = `import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://proxy.example.com',
+  apiKey: process.env.OPENAI_API_KEY, // or proxy key in MongoDB mode
+});
+
+// Identity for usage tracking (e.g. via custom fetch/headers)
+// Tokenist reads x-user-id and x-org-id from WebSocket handshake
+const realtime = await client.beta.realtime.connect({
+  model: 'gpt-4o-realtime-preview',
+  // ... pass user/org in your connection layer
+});`;
+
 export function CodeExample() {
   return (
     <section id="code" className="scroll-mt-20 bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
@@ -15,7 +41,7 @@ export function CodeExample() {
           </p>
         </div>
         <div className="mt-12 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm overflow-hidden">
+          <div className="relative rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] px-4 py-3 bg-[var(--bg-elevated)]">
               <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
               <span className="h-2.5 w-2.5 rounded-full bg-yellow-300" />
@@ -25,18 +51,11 @@ export function CodeExample() {
               </span>
             </div>
             <pre className="overflow-x-auto p-5 font-mono text-sm text-[var(--fg)]">
-              <code>{`const ws = new WebSocket(
-  'wss://proxy.example.com/v1/realtime?model=gpt-4o-realtime-preview',
-  {
-    headers: {
-      'x-user-id': 'user_abc123',
-      'x-org-id': 'org_xyz',  // optional
-    },
-  }
-);`}</code>
+              <code>{wsSnippet}</code>
             </pre>
+            <CopyCodeButton text={wsSnippet} />
           </div>
-          <div className="rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm overflow-hidden">
+          <div className="relative rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] px-4 py-3 bg-[var(--bg-elevated)]">
               <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
               <span className="h-2.5 w-2.5 rounded-full bg-yellow-300" />
@@ -46,20 +65,9 @@ export function CodeExample() {
               </span>
             </div>
             <pre className="overflow-x-auto p-5 font-mono text-sm text-[var(--fg)]">
-              <code>{`import OpenAI from 'openai';
-
-const client = new OpenAI({
-  baseURL: 'https://proxy.example.com',
-  apiKey: process.env.OPENAI_API_KEY, // or proxy key in MongoDB mode
-});
-
-// Identity for usage tracking (e.g. via custom fetch/headers)
-// Tokenist reads x-user-id and x-org-id from WebSocket handshake
-const realtime = await client.beta.realtime.connect({
-  model: 'gpt-4o-realtime-preview',
-  // ... pass user/org in your connection layer
-});`}</code>
+              <code>{openaiSnippet}</code>
             </pre>
+            <CopyCodeButton text={openaiSnippet} />
           </div>
         </div>
         <div className="mt-8 rounded-xl border border-[var(--border)] bg-[var(--accent-light)] px-6 py-4 text-center">
