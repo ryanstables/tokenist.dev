@@ -41,10 +41,12 @@ export function DocsSidebar() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id);
-          }
+        const intersecting = entries.filter((e) => e.isIntersecting);
+        if (intersecting.length > 0) {
+          intersecting.sort(
+            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
+          );
+          setActiveId(intersecting[0].target.id);
         }
       },
       { rootMargin: "-20% 0% -70% 0%", threshold: 0 }
@@ -66,12 +68,12 @@ export function DocsSidebar() {
     }`;
 
   return (
-    <aside className="w-56 shrink-0">
+    <aside aria-label="Page navigation" className="w-56 shrink-0">
       <div className="sticky top-24 space-y-6">
         <p className="px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
           On this page
         </p>
-        <nav className="space-y-1">
+        <nav aria-label="On this page" className="space-y-1">
           {sections.map((section) => (
             <div key={section.id}>
               <a href={`#${section.id}`} className={linkClass(section.id)}>

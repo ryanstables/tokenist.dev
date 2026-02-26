@@ -16,17 +16,17 @@ export default function DocsPage() {
     <>
       <Header />
       <MobileMenu />
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex gap-12">
           <div className="hidden lg:block">
             <DocsSidebar />
           </div>
-          <main className="min-w-0 flex-1 space-y-20">
+          <div className="min-w-0 flex-1 space-y-20">
             {/* Sections will be added in subsequent tasks */}
             <p className="text-[var(--fg-muted)]">Content coming soon…</p>
-          </main>
+          </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </>
   );
