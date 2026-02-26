@@ -43,8 +43,20 @@ function CodeBlock({ children }: { children: string }) {
   );
 }
 
+function EndpointHeading({ method, path }: { method: string; path: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="rounded-lg bg-[var(--accent)] px-2.5 py-1 text-xs font-semibold text-white">
+        {method}
+      </span>
+      <code className="text-lg font-semibold text-[var(--fg)]">{path}</code>
+    </div>
+  );
+}
+
 function ParamTable({
   params,
+  label,
 }: {
   params: {
     name: string;
@@ -52,22 +64,23 @@ function ParamTable({
     required: boolean;
     desc: string;
   }[];
+  label?: string;
 }) {
   return (
     <div className="mt-3 overflow-hidden rounded-xl border border-[var(--border)]">
-      <table className="w-full text-sm">
+      <table aria-label={label} className="w-full text-sm">
         <thead>
           <tr className="border-b border-[var(--border)] bg-[var(--bg-elevated)]">
-            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+            <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
               Field
             </th>
-            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+            <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
               Type
             </th>
-            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+            <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
               Required
             </th>
-            <th className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+            <th scope="col" className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
               Description
             </th>
           </tr>
@@ -182,14 +195,7 @@ export default function DocsPage() {
 
               {/* /sdk/check */}
               <div id="endpoint-check" className="mt-12 scroll-mt-24">
-                <div className="flex items-center gap-3">
-                  <span className="rounded-md bg-[var(--accent)] px-2.5 py-1 text-xs font-semibold text-white">
-                    POST
-                  </span>
-                  <code className="text-lg font-semibold text-[var(--fg)]">
-                    /sdk/check
-                  </code>
-                </div>
+                <EndpointHeading method="POST" path="/sdk/check" />
                 <p className="mt-2 text-[var(--fg-muted)]">
                   Pre-flight check before forwarding a request to OpenAI. Returns whether
                   the user is allowed to proceed based on their current usage and any
@@ -200,6 +206,7 @@ export default function DocsPage() {
                   Request
                 </h4>
                 <ParamTable
+                  label="Request parameters"
                   params={[
                     { name: "userId", type: "string", required: true, desc: "Your application's identifier for the end user." },
                     { name: "model", type: "string", required: true, desc: 'OpenAI model ID, e.g. "gpt-4o" or "gpt-4o-realtime-preview".' },
@@ -213,6 +220,7 @@ export default function DocsPage() {
                   Response
                 </h4>
                 <ParamTable
+                  label="Response parameters"
                   params={[
                     { name: "allowed", type: "boolean", required: true, desc: "Whether the user may proceed with their request." },
                     { name: "reason", type: "string", required: false, desc: 'Present when allowed is false. E.g. "User is blocked: Exceeded fair usage".' },
@@ -247,14 +255,7 @@ export default function DocsPage() {
 
               {/* /sdk/record */}
               <div id="endpoint-record" className="mt-14 scroll-mt-24">
-                <div className="flex items-center gap-3">
-                  <span className="rounded-md bg-[var(--accent)] px-2.5 py-1 text-xs font-semibold text-white">
-                    POST
-                  </span>
-                  <code className="text-lg font-semibold text-[var(--fg)]">
-                    /sdk/record
-                  </code>
-                </div>
+                <EndpointHeading method="POST" path="/sdk/record" />
                 <p className="mt-2 text-[var(--fg-muted)]">
                   Record actual token usage after an OpenAI request completes. Updates
                   the user&apos;s running totals and re-evaluates their block status against
@@ -265,6 +266,7 @@ export default function DocsPage() {
                   Request
                 </h4>
                 <ParamTable
+                  label="Request parameters"
                   params={[
                     { name: "userId", type: "string", required: true, desc: "End user identifier." },
                     { name: "model", type: "string", required: true, desc: "OpenAI model that processed the request." },
@@ -281,6 +283,7 @@ export default function DocsPage() {
                   Response
                 </h4>
                 <ParamTable
+                  label="Response parameters"
                   params={[
                     { name: "recorded", type: "boolean", required: true, desc: "Always true on success." },
                     { name: "usage.tokens", type: "number", required: false, desc: "Updated total tokens for this user." },
@@ -316,14 +319,7 @@ export default function DocsPage() {
 
               {/* /sdk/log */}
               <div id="endpoint-log" className="mt-14 scroll-mt-24">
-                <div className="flex items-center gap-3">
-                  <span className="rounded-md bg-[var(--accent)] px-2.5 py-1 text-xs font-semibold text-white">
-                    POST
-                  </span>
-                  <code className="text-lg font-semibold text-[var(--fg)]">
-                    /sdk/log
-                  </code>
-                </div>
+                <EndpointHeading method="POST" path="/sdk/log" />
                 <p className="mt-2 text-[var(--fg-muted)]">
                   Store the full request and response payload for a completed OpenAI
                   call. Enables conversation history, cost breakdowns per request, and
@@ -334,6 +330,7 @@ export default function DocsPage() {
                   Request
                 </h4>
                 <ParamTable
+                  label="Request parameters"
                   params={[
                     { name: "model", type: "string", required: true, desc: "OpenAI model used." },
                     { name: "request", type: "object", required: true, desc: "The original request body sent to OpenAI." },
@@ -359,8 +356,9 @@ export default function DocsPage() {
     ]
   },
   "response": {
-    "choices": [{ "message": { "role": "assistant",
-      "content": "You have placed 3 orders..." } }],
+    "choices": [
+      { "message": { "role": "assistant", "content": "You have placed 3 orders..." } }
+    ],
     "usage": { "prompt_tokens": 18, "completion_tokens": 42 }
   },
   "userId": "user_alice",
