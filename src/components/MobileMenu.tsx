@@ -10,6 +10,7 @@ const nav = [
   { label: "Code", href: "#code" },
   { label: "Pricing", href: "#pricing" },
   { label: "FAQ", href: "#faq" },
+  { label: "Docs", href: "/docs" },
 ];
 
 export function MobileMenu() {
