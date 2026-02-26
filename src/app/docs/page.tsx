@@ -3,6 +3,7 @@ import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
 import { getSingletonHighlighter } from "shiki";
+import { CopyCodeButton } from "@/components/CopyCodeButton";
 
 export const dynamic = "force-static";
 
@@ -52,11 +53,17 @@ async function CodeBlock({
     theme: "github-dark",
   });
   return (
-    <div
-      className="overflow-x-auto rounded-xl bg-[var(--fg)] px-5 py-4 text-sm leading-relaxed [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0"
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is trusted
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <div className="relative">
+      <div
+        className="overflow-x-auto rounded-xl bg-[var(--fg)] px-5 py-4 text-sm leading-relaxed [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is trusted
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      <CopyCodeButton
+        text={children.trim()}
+        className="text-white/40 hover:text-white/90"
+      />
+    </div>
   );
 }
 
