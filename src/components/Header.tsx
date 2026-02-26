@@ -68,13 +68,13 @@ export function Header() {
         <div className="flex items-center">
           <Link
             href="#"
-            className="hidden md:flex items-center text-[var(--accent)]"
+            className="hidden md:flex items-center gap-2 text-[var(--accent-dim)]"
             aria-label="Tokenist"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 200 200"
-              className="h-8 w-8 flex-shrink-0"
+              className="h-8 w-8 flex-shrink-0 -translate-y-0.5"
               aria-hidden
             >
               <g transform="translate(60,65)">
@@ -83,6 +83,7 @@ export function Header() {
                 <rect fill="currentColor" height="18" width="32" y="76" x="24" />
               </g>
             </svg>
+            <span className="font-semibold leading-8">Tokenist.</span>
           </Link>
 
           <button
