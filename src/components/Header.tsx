@@ -2,19 +2,19 @@
 
 import Link from "next/link";
 import { useState, useEffect, startTransition } from "react";
-import { AuthModal } from "./auth";
+import { useAuthModal } from "./auth";
 import { getToken, clearToken } from "@/lib/auth";
 
 const nav = [
-  { label: "Features", href: "#features" },
-  { label: "Code", href: "#code" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Features", href: "/#features" },
+  { label: "Code", href: "/#code" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "FAQ", href: "/#faq" },
   { label: "Docs", href: "/docs" },
 ];
 
 export function Header() {
-  const [showAuth, setShowAuth] = useState(false);
+  const { openLogin } = useAuthModal();
   // Start with false to match server render and avoid hydration mismatch
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [open, setOpen] = useState(false);
@@ -45,16 +45,6 @@ export function Header() {
 
   const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001';
 
-  const handleAuthenticated = (token?: string) => {
-    setIsLoggedIn(true);
-    setShowAuth(false);
-    // Redirect to dashboard with token in URL for cross-origin auth
-    setTimeout(() => {
-      const authToken = token || getToken();
-      window.location.href = authToken ? `${dashboardUrl}?token=${encodeURIComponent(authToken)}` : dashboardUrl;
-    }, 0);
-  };
-
   const handleLogout = () => {
     clearToken();
     setIsLoggedIn(false);
@@ -68,7 +58,7 @@ export function Header() {
         {/* LEFT — logo on desktop, burger on mobile */}
         <div className="flex items-center">
           <Link
-            href="#"
+            href="/"
             className="hidden md:flex items-center gap-2 text-[var(--accent-dim)]"
             aria-label="Tokenist"
           >
@@ -133,7 +123,7 @@ export function Header() {
             </>
           ) : (
             <button
-              onClick={() => setShowAuth(true)}
+              onClick={openLogin}
               className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Login / Register
@@ -173,7 +163,7 @@ export function Header() {
                 </>
               ) : (
                 <button
-                  onClick={() => { setOpen(false); setShowAuth(true); }}
+                  onClick={() => { setOpen(false); openLogin(); }}
                   className="rounded-lg bg-[var(--accent)] px-3 py-2 text-center text-sm font-semibold text-white"
                 >
                   Login / Register
@@ -183,12 +173,6 @@ export function Header() {
           </nav>
         </div>
       )}
-
-      <AuthModal
-        isOpen={showAuth}
-        onClose={() => setShowAuth(false)}
-        onAuthenticated={handleAuthenticated}
-      />
     </header>
   );
 }

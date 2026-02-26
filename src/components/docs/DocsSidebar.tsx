@@ -69,10 +69,7 @@ export function DocsSidebar() {
 
   return (
     <aside aria-label="Page navigation" className="w-56 shrink-0">
-      <div className="sticky top-24 space-y-6">
-        <p className="px-3 text-xs font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
-          On this page
-        </p>
+      <div className="max-h-[calc(100vh-6rem)] space-y-6 overflow-y-auto">
         <nav aria-label="On this page" className="space-y-1">
           {sections.map((section) => (
             <div key={section.id}>

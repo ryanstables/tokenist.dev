@@ -10,15 +10,20 @@ interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
   onAuthenticated: (token?: string) => void
+  initialMode?: 'login' | 'register'
 }
 
-export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) {
+export function AuthModal({ isOpen, onClose, onAuthenticated, initialMode = 'login' }: AuthModalProps) {
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     startTransition(() => { setMounted(true) })
   }, [])
+
+  useEffect(() => {
+    if (isOpen) startTransition(() => { setMode(initialMode) })
+  }, [isOpen, initialMode])
 
   if (!isOpen || !mounted) return null
 

@@ -2,20 +2,20 @@
 
 import Link from "next/link";
 import { useState, useEffect, startTransition } from "react";
-import { AuthModal } from "./auth";
+import { useAuthModal } from "./auth";
 import { getToken, clearToken } from "@/lib/auth";
 
 const nav = [
-  { label: "Features", href: "#features" },
-  { label: "Code", href: "#code" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
+  { label: "Features", href: "/#features" },
+  { label: "Code", href: "/#code" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "FAQ", href: "/#faq" },
   { label: "Docs", href: "/docs" },
 ];
 
 export function MobileMenu() {
+  const { openLogin } = useAuthModal();
   const [open, setOpen] = useState(false);
-  const [showAuth, setShowAuth] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || "http://localhost:3001";
@@ -36,17 +36,6 @@ export function MobileMenu() {
 
     startTransition(() => { setIsLoggedIn(!!getToken()); });
   }, []);
-
-  const handleAuthenticated = (token?: string) => {
-    setIsLoggedIn(true);
-    setShowAuth(false);
-    setTimeout(() => {
-      const authToken = token || getToken();
-      window.location.href = authToken
-        ? `${dashboardUrl}?token=${encodeURIComponent(authToken)}`
-        : dashboardUrl;
-    }, 0);
-  };
 
   const handleLogout = () => {
     clearToken();
@@ -106,7 +95,7 @@ export function MobileMenu() {
                   <button
                     onClick={() => {
                       setOpen(false);
-                      setShowAuth(true);
+                      openLogin();
                     }}
                     className="rounded-lg bg-[var(--accent)] px-3 py-2 text-center text-sm font-semibold text-white"
                   >
@@ -118,12 +107,6 @@ export function MobileMenu() {
           </div>
         </div>
       )}
-
-      <AuthModal
-        isOpen={showAuth}
-        onClose={() => setShowAuth(false)}
-        onAuthenticated={handleAuthenticated}
-      />
     </>
   );
 }

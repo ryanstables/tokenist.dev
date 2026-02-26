@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto_Mono } from "next/font/google";
+import { AuthModalProvider } from "@/components/auth";
 import "./globals.css";
 
 // Static export: no server-only APIs (cookies, headers, etc.), no ISR, no API routes
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${robotoMono.variable} grain`}>
       <body className="antialiased min-h-screen">
-        {children}
+        <AuthModalProvider>{children}</AuthModalProvider>
       </body>
     </html>
   );
