@@ -12,9 +12,12 @@ export function CopyCodeButton({
   const [copied, setCopied] = useState(false);
 
   const copy = () => {
+    if (!navigator.clipboard) return;
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {
+      // clipboard write failed (permission denied or unavailable) — fail silently
     });
   };
 
