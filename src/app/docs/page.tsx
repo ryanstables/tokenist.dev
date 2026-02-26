@@ -378,7 +378,216 @@ export default function DocsPage() {
               </div>
             </section>
 
-            {/* TypeScript SDK section will be added next */}
+            {/* ── TYPESCRIPT SDK ──────────────────────────────────────────── */}
+            <section id="typescript-sdk" className="scroll-mt-24">
+              <h2 className="text-2xl font-semibold text-[var(--fg)]">
+                TypeScript SDK
+              </h2>
+              <div className="mt-4 h-px bg-[var(--border)]" />
+              <p className="mt-4 text-[var(--fg-muted)] leading-relaxed">
+                <InlineCode>tokenist-js</InlineCode> is a typed Node.js client for the
+                Tokenist API. It wraps the three SDK endpoints and provides full
+                TypeScript types for all request and response shapes.
+              </p>
+
+              {/* Installation */}
+              <div id="sdk-install" className="mt-10 scroll-mt-24">
+                <h3 className="text-lg font-semibold text-[var(--fg)]">Installation</h3>
+                <div className="mt-4 space-y-4">
+                  <CodeBlock>{`npm install tokenist-js`}</CodeBlock>
+                  <CodeBlock>{`import { TokenistClient } from "tokenist-js";
+
+const tokenist = new TokenistClient({
+  apiKey: process.env.TOKENIST_API_KEY!, // ug_...
+  baseUrl: "https://api.tokenist.dev",   // or your self-hosted URL
+});`}</CodeBlock>
+                </div>
+              </div>
+
+              {/* client.sdk.check() */}
+              <div id="sdk-check" className="mt-12 scroll-mt-24">
+                <h3 className="text-lg font-semibold text-[var(--fg)]">
+                  client.sdk.check()
+                </h3>
+                <p className="mt-2 text-[var(--fg-muted)]">
+                  Check whether a user is allowed to make an OpenAI request. Call this
+                  before forwarding to OpenAI and abort if{" "}
+                  <InlineCode>allowed</InlineCode> is <InlineCode>false</InlineCode>.
+                </p>
+                <div className="mt-4 space-y-4">
+                  <CodeBlock>{`const result = await tokenist.sdk.check({
+  userId: "user_alice",
+  model: "gpt-4o",
+  requestType: "chat",
+  estimatedTokens: 500,    // optional
+  feature: "support-chat", // optional
+});
+
+if (!result.allowed) {
+  throw new Error(\`Request blocked: \${result.reason}\`);
+}`}</CodeBlock>
+                </div>
+
+                <h4 className="mt-6 text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+                  Type signatures
+                </h4>
+                <CodeBlock>{`interface SdkCheckRequest {
+  userId: string;
+  model: string;
+  requestType: "chat" | "realtime" | "embeddings";
+  estimatedTokens?: number;
+  feature?: string;
+}
+
+interface SdkCheckResponse {
+  allowed: boolean;
+  reason?: string;
+  usage?: { tokens: number; costUsd: number };
+  remaining?: { tokens: number; costUsd: number };
+}`}</CodeBlock>
+              </div>
+
+              {/* client.sdk.record() */}
+              <div id="sdk-record" className="mt-12 scroll-mt-24">
+                <h3 className="text-lg font-semibold text-[var(--fg)]">
+                  client.sdk.record()
+                </h3>
+                <p className="mt-2 text-[var(--fg-muted)]">
+                  Record actual token usage after a completed OpenAI call. Returns the
+                  user&apos;s updated totals and whether they were automatically blocked.
+                </p>
+                <div className="mt-4 space-y-4">
+                  <CodeBlock>{`const { blocked, usage } = await tokenist.sdk.record({
+  userId: "user_alice",
+  model: "gpt-4o",
+  requestType: "chat",
+  inputTokens: openAiResponse.usage.prompt_tokens,
+  outputTokens: openAiResponse.usage.completion_tokens,
+  latencyMs: Date.now() - startTime,
+  success: true,
+  feature: "support-chat",
+});
+
+if (blocked) {
+  // User hit their limit mid-session — handle gracefully
+}`}</CodeBlock>
+                </div>
+
+                <h4 className="mt-6 text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+                  Type signatures
+                </h4>
+                <CodeBlock>{`interface SdkRecordRequest {
+  userId: string;
+  model: string;
+  requestType: "chat" | "realtime" | "embeddings";
+  inputTokens: number;
+  outputTokens: number;
+  latencyMs?: number;
+  success?: boolean;
+  feature?: string;
+}
+
+interface SdkRecordResponse {
+  recorded: boolean;
+  usage?: { tokens: number; costUsd: number };
+  blocked: boolean;
+}`}</CodeBlock>
+              </div>
+
+              {/* client.sdk.log() */}
+              <div id="sdk-log" className="mt-12 scroll-mt-24">
+                <h3 className="text-lg font-semibold text-[var(--fg)]">
+                  client.sdk.log()
+                </h3>
+                <p className="mt-2 text-[var(--fg-muted)]">
+                  Persist the full request/response payload. Required to see conversation
+                  history and enable sentiment analysis in the dashboard.
+                </p>
+                <div className="mt-4 space-y-4">
+                  <CodeBlock>{`await tokenist.sdk.log({
+  model: "gpt-4o",
+  request: { messages },        // the body sent to OpenAI
+  response: openAiResponse,     // the full response object
+  userId: "user_alice",
+  userEmail: "alice@example.com",
+  userName: "Alice",
+  conversationId: sessionId,
+  feature: "support-chat",
+  latencyMs: Date.now() - startTime,
+  status: "success",
+});`}</CodeBlock>
+                </div>
+
+                <h4 className="mt-6 text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+                  Type signatures
+                </h4>
+                <CodeBlock>{`interface SdkLogRequest {
+  model: string;
+  request: Record<string, unknown>;
+  response?: Record<string, unknown>;
+  userId?: string;
+  userEmail?: string;
+  userName?: string;
+  conversationId?: string;
+  feature?: string;
+  latencyMs?: number;
+  status?: "success" | "error";
+}`}</CodeBlock>
+              </div>
+
+              {/* Putting it all together */}
+              <div className="mt-14 rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6">
+                <h3 className="font-semibold text-[var(--fg)]">Putting it together</h3>
+                <p className="mt-2 text-sm text-[var(--fg-muted)]">
+                  A typical server-side middleware pattern using all three methods:
+                </p>
+                <div className="mt-4">
+                  <CodeBlock>{`async function openAiWithGuardrails(
+  userId: string,
+  messages: ChatMessage[],
+) {
+  // 1. Check before the request
+  const check = await tokenist.sdk.check({
+    userId,
+    model: "gpt-4o",
+    requestType: "chat",
+    feature: "support-chat",
+  });
+  if (!check.allowed) throw new Error(check.reason);
+
+  // 2. Call OpenAI
+  const start = Date.now();
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages,
+  });
+  const latencyMs = Date.now() - start;
+
+  // 3. Record usage
+  await tokenist.sdk.record({
+    userId,
+    model: "gpt-4o",
+    requestType: "chat",
+    inputTokens: response.usage!.prompt_tokens,
+    outputTokens: response.usage!.completion_tokens,
+    latencyMs,
+    success: true,
+  });
+
+  // 4. Log full payload
+  await tokenist.sdk.log({
+    model: "gpt-4o",
+    request: { messages },
+    response,
+    userId,
+    latencyMs,
+  });
+
+  return response;
+}`}</CodeBlock>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </main>
