@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
+import { codeToHtml } from "shiki";
 
 export const dynamic = "force-static";
 
@@ -35,11 +36,23 @@ function Step({
   );
 }
 
-function CodeBlock({ children }: { children: string }) {
+async function CodeBlock({
+  children,
+  lang = "typescript",
+}: {
+  children: string;
+  lang?: string;
+}) {
+  const html = await codeToHtml(children.trim(), {
+    lang,
+    theme: "github-dark",
+  });
   return (
-    <pre className="overflow-x-auto rounded-xl bg-[var(--fg)] px-5 py-4 text-sm leading-relaxed text-[var(--accent-light)]">
-      <code>{children.trim()}</code>
-    </pre>
+    <div
+      className="overflow-x-auto rounded-xl bg-[var(--fg)] px-5 py-4 text-sm leading-relaxed [&_pre]:!m-0 [&_pre]:!bg-transparent [&_pre]:!p-0"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: shiki output is trusted
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
   );
 }
 
@@ -175,7 +188,7 @@ export default function DocsPage() {
                 </Step>
 
                 <Step n={2} title="Install the TypeScript SDK">
-                  <CodeBlock>{`npm install tokenist-js`}</CodeBlock>
+                  <CodeBlock lang="bash">{`npm install tokenist-js`}</CodeBlock>
                   <p className="mt-3 text-[var(--fg-muted)]">
                     Or use the HTTP API directly — all endpoints accept standard JSON
                     over HTTPS. No SDK required.
@@ -234,7 +247,7 @@ export default function DocsPage() {
                 <div className="mt-6 grid gap-4 lg:grid-cols-2">
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--fg-muted)]/60">Request</p>
-                    <CodeBlock>{`{
+                    <CodeBlock lang="json">{`{
   "userId": "user_alice",
   "model": "gpt-4o",
   "requestType": "chat",
@@ -244,7 +257,7 @@ export default function DocsPage() {
                   </div>
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--fg-muted)]/60">Response (allowed)</p>
-                    <CodeBlock>{`{
+                    <CodeBlock lang="json">{`{
   "allowed": true,
   "usage": { "tokens": 1200, "costUsd": 0.08 },
   "remaining": { "tokens": 8800, "costUsd": 9.92 }
@@ -295,7 +308,7 @@ export default function DocsPage() {
                 <div className="mt-6 grid gap-4 lg:grid-cols-2">
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--fg-muted)]/60">Request</p>
-                    <CodeBlock>{`{
+                    <CodeBlock lang="json">{`{
   "userId": "user_alice",
   "model": "gpt-4o",
   "requestType": "chat",
@@ -308,7 +321,7 @@ export default function DocsPage() {
                   </div>
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--fg-muted)]/60">Response</p>
-                    <CodeBlock>{`{
+                    <CodeBlock lang="json">{`{
   "recorded": true,
   "usage": { "tokens": 1930, "costUsd": 0.11 },
   "blocked": false
@@ -348,7 +361,7 @@ export default function DocsPage() {
                 <div className="mt-6 grid gap-4 lg:grid-cols-2">
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--fg-muted)]/60">Request</p>
-                    <CodeBlock>{`{
+                    <CodeBlock lang="json">{`{
   "model": "gpt-4o",
   "request": {
     "messages": [
@@ -369,7 +382,7 @@ export default function DocsPage() {
                   </div>
                   <div>
                     <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--fg-muted)]/60">Response</p>
-                    <CodeBlock>{`{
+                    <CodeBlock lang="json">{`{
   "logged": true,
   "logId": "log_01jq3..."
 }`}</CodeBlock>
@@ -394,7 +407,7 @@ export default function DocsPage() {
               <div id="sdk-install" className="mt-10 scroll-mt-24">
                 <h3 className="text-lg font-semibold text-[var(--fg)]">Installation</h3>
                 <div className="mt-4 space-y-4">
-                  <CodeBlock>{`npm install tokenist-js`}</CodeBlock>
+                  <CodeBlock lang="bash">{`npm install tokenist-js`}</CodeBlock>
                   <CodeBlock>{`import { TokenistClient } from "tokenist-js";
 
 const tokenist = new TokenistClient({
