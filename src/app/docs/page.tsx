@@ -67,6 +67,20 @@ async function CodeBlock({
   );
 }
 
+function PromptBlock({ children }: { children: string }) {
+  return (
+    <div className="relative mt-6 rounded-xl border border-[var(--accent)]/20 bg-[var(--accent-light)] px-5 pb-4 pt-6">
+      <span className="absolute -top-2.5 left-4 rounded-full border border-[var(--accent)]/20 bg-[var(--bg)] px-2.5 py-0.5 text-xs font-medium text-[var(--accent-dim)]">
+        Agent prompt
+      </span>
+      <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-relaxed text-[var(--fg)]">
+        {children.trim()}
+      </pre>
+      <CopyCodeButton text={children.trim()} />
+    </div>
+  );
+}
+
 function EndpointHeading({ method, path }: { method: string; path: string }) {
   return (
     <div className="flex items-center gap-3">
@@ -216,6 +230,26 @@ export default function DocsPage() {
                 Base URL: <InlineCode>https://api.tokenist.dev</InlineCode> (or your
                 self-hosted instance).
               </p>
+
+              <PromptBlock>{`Integrate the Tokenist HTTP API. Base URL: https://api.tokenist.dev — authenticate every request with: Authorization: Bearer <TOKENIST_API_KEY>
+
+Three endpoints to call server-side around each OpenAI request:
+
+POST /sdk/check — call BEFORE forwarding to OpenAI
+  Required: userId (string), model (string), requestType ("chat"|"realtime"|"embeddings")
+  Optional: estimatedTokens (number), feature (string)
+  Returns: { allowed: boolean, reason?: string, usage: { tokens, costUsd }, remaining?: { tokens, costUsd } }
+  → If allowed is false, abort the request and surface reason to the user.
+
+POST /sdk/record — call AFTER the OpenAI response completes
+  Required: userId, model, requestType, inputTokens (number), outputTokens (number), latencyMs (number), success (boolean)
+  Optional: feature (string)
+  Returns: { recorded: boolean, usage?: { tokens, costUsd }, blocked: boolean }
+
+POST /sdk/log — call AFTER recording to persist the full payload
+  Required: model (string), request (object — the body you sent to OpenAI)
+  Optional: response (object), userId, userEmail, userName, conversationId, feature, latencyMs, status ("success"|"error")
+  Returns: { logged: boolean, logId: string }`}</PromptBlock>
 
               {/* /sdk/check */}
               <div id="endpoint-check" className="mt-12 scroll-mt-24">
@@ -413,6 +447,29 @@ export default function DocsPage() {
                 Tokenist API. It wraps the three SDK endpoints and provides full
                 TypeScript types for all request and response shapes.
               </p>
+
+              <PromptBlock>{`Integrate the tokenist-js TypeScript SDK into my project.
+
+npm install tokenist-js
+
+import { TokenistClient } from "tokenist-js";
+const tokenist = new TokenistClient({
+  apiKey: process.env.TOKENIST_API_KEY!, // ug_... prefix
+  baseUrl: "https://api.tokenist.dev",
+});
+
+Three methods to call server-side around each OpenAI request:
+
+tokenist.sdk.check(req) → Promise<SdkCheckResponse>
+  req: { userId, model, requestType: "chat"|"realtime"|"embeddings", estimatedTokens?, feature? }
+  res: { allowed: boolean, reason?: string, usage: { tokens, costUsd }, remaining?: { tokens, costUsd } }
+  → Abort if !res.allowed
+
+tokenist.sdk.record(req) → Promise<void>
+  req: { userId, model, requestType, inputTokens, outputTokens, latencyMs, success: boolean, feature? }
+
+tokenist.sdk.log(req) → Promise<void>
+  req: { model, request: object, response?: object, userId?, userEmail?, userName?, conversationId?, feature?, latencyMs?, status?: "success"|"error" }`}</PromptBlock>
 
               {/* Installation */}
               <div id="sdk-install" className="mt-10 scroll-mt-24">
