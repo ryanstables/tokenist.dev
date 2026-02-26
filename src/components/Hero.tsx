@@ -1,8 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import heroImg from "../../assets/hero2.jpg";
+import { useAuthModal } from "./auth";
 
 export function Hero() {
+  const { openRegister } = useAuthModal();
+  
   return (
     <section className="bg-[var(--bg)]" style={{ padding: "0.75rem" }}>
       {/* Inner container — inset from section edges to show the gutter */}
@@ -64,6 +69,7 @@ export function Hero() {
                 <Link
                   href="#"
                   className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-6 py-3 font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
+                  onClick={openRegister}
                 >
                   Get started free
                 </Link>

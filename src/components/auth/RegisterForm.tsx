@@ -8,9 +8,12 @@ interface RegisterFormProps {
   onSwitchToLogin: () => void
 }
 
+const MIN_PASSWORD_LENGTH = 8
+
 export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,10 +21,19 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setLoading(true)
 
+    if (password.length < MIN_PASSWORD_LENGTH) {
+      setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters`)
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    setLoading(true)
     try {
-      const result = await register(email, password, displayName || undefined)
+      const result = await register(email, password, displayName.trim())
       saveToken(result.token)
       onSuccess()
     } catch (err) {
@@ -43,13 +55,14 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
 
       <div>
         <label htmlFor="displayName" className="block text-sm font-medium mb-1 text-[var(--fg)]">
-          Display Name (optional)
+          Name
         </label>
         <input
           id="displayName"
           type="text"
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
+          required
           className="w-full px-3 py-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
         />
       </div>
@@ -78,14 +91,35 @@ export function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFormProps) 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          minLength={8}
+          minLength={MIN_PASSWORD_LENGTH}
           className="w-full px-3 py-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
         />
+        <p className="mt-1 text-xs text-[var(--fg-muted)]">
+          At least {MIN_PASSWORD_LENGTH} characters
+        </p>
+      </div>
+
+      <div>
+        <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1 text-[var(--fg)]">
+          Confirm password
+        </label>
+        <input
+          id="confirmPassword"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          minLength={MIN_PASSWORD_LENGTH}
+          className="w-full px-3 py-2 rounded-lg bg-[var(--bg-elevated)] border border-[var(--border)] text-[var(--fg)] placeholder:text-[var(--fg-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent"
+        />
+        {confirmPassword && password !== confirmPassword && (
+          <p className="mt-1 text-xs text-red-500">Passwords do not match</p>
+        )}
       </div>
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || (!!confirmPassword && password !== confirmPassword)}
         className="w-full py-2.5 px-4 bg-[var(--accent)] text-[var(--bg)] font-semibold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
       >
         {loading ? 'Creating account...' : 'Create Account'}
