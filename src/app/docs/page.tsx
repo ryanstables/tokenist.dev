@@ -2,7 +2,18 @@ import { Header } from "@/components/Header";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
-import { codeToHtml } from "shiki";
+import { createHighlighter } from "shiki";
+
+let _highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
+function getHighlighter() {
+  if (!_highlighterPromise) {
+    _highlighterPromise = createHighlighter({
+      themes: ["github-dark"],
+      langs: ["typescript", "bash", "json"],
+    });
+  }
+  return _highlighterPromise;
+}
 
 export const dynamic = "force-static";
 
@@ -43,7 +54,8 @@ async function CodeBlock({
   children: string;
   lang?: string;
 }) {
-  const html = await codeToHtml(children.trim(), {
+  const highlighter = await getHighlighter();
+  const html = highlighter.codeToHtml(children.trim(), {
     lang,
     theme: "github-dark",
   });
@@ -145,7 +157,7 @@ export default function DocsPage() {
       <MobileMenu />
       <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex gap-12">
-          <div className="hidden lg:block">
+          <div className="hidden lg:block lg:sticky lg:top-24 lg:self-start">
             <DocsSidebar />
           </div>
           <div className="min-w-0 flex-1 space-y-20">
