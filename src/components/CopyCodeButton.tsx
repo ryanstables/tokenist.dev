@@ -23,26 +23,29 @@ export function CopyCodeButton({
 
   return (
     <button
+      type="button"
       onClick={copy}
       aria-label={copied ? "Copied!" : "Copy code"}
       className={`absolute right-2 top-2 rounded-md p-1.5 transition-colors ${className}`}
     >
       {copied ? (
-        // Checkmark icon
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
+        // Checkmark icon — green success state
+        <span className="text-[var(--success)]">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </span>
       ) : (
         // Clipboard icon
         <svg
