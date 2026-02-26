@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export function CopyCodeButton({
   text,
-  className = "text-[var(--fg)]/50 hover:text-[var(--fg)]",
+  className = "text-[var(--fg)]/70 hover:text-[var(--fg)]",
 }: {
   text: string;
   className?: string;
