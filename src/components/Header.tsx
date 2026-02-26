@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { AuthModal } from "./auth";
 import { getToken, clearToken } from "@/lib/auth";
 
@@ -35,12 +35,12 @@ export function Header() {
       window.history.replaceState({}, '', newUrl);
 
       // User is logged out
-      setIsLoggedIn(false);
+      startTransition(() => { setIsLoggedIn(false); });
       return;
     }
 
     // No logout param - check if user has a valid token
-    setIsLoggedIn(!!getToken());
+    startTransition(() => { setIsLoggedIn(!!getToken()); });
   }, []);
 
   const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001';

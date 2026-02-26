@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, startTransition } from 'react'
 import { createPortal } from 'react-dom'
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
@@ -17,7 +17,7 @@ export function AuthModal({ isOpen, onClose, onAuthenticated }: AuthModalProps) 
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    startTransition(() => { setMounted(true) })
   }, [])
 
   if (!isOpen || !mounted) return null

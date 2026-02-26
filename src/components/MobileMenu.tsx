@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { AuthModal } from "./auth";
 import { getToken, clearToken } from "@/lib/auth";
 
@@ -30,11 +30,11 @@ export function MobileMenu() {
         ? `${window.location.pathname}?${params.toString()}`
         : window.location.pathname;
       window.history.replaceState({}, "", newUrl);
-      setIsLoggedIn(false);
+      startTransition(() => { setIsLoggedIn(false); });
       return;
     }
 
-    setIsLoggedIn(!!getToken());
+    startTransition(() => { setIsLoggedIn(!!getToken()); });
   }, []);
 
   const handleAuthenticated = (token?: string) => {
