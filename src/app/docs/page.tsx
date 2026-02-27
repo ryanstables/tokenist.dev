@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Footer } from "@/components/Footer";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
+import { PromptBlock } from "@/components/docs/PromptBlock";
 import { getSingletonHighlighter } from "shiki";
 import { CopyCodeButton } from "@/components/CopyCodeButton";
 
@@ -63,20 +64,6 @@ async function CodeBlock({
         text={children.trim()}
         className="text-white/40 hover:text-white/90"
       />
-    </div>
-  );
-}
-
-function PromptBlock({ children }: { children: string }) {
-  return (
-    <div className="relative mt-6 rounded-xl border border-[var(--accent)]/20 bg-[var(--accent-light)] px-5 pb-4 pt-6">
-      <span className="absolute -top-2.5 left-4 rounded-full border border-[var(--accent)]/20 bg-[var(--bg)] px-2.5 py-0.5 text-xs font-medium text-[var(--accent-dim)]">
-        Agent prompt
-      </span>
-      <pre className="whitespace-pre-wrap break-words font-mono text-sm leading-relaxed text-[var(--fg)]">
-        {children.trim()}
-      </pre>
-      <CopyCodeButton text={children.trim()} />
     </div>
   );
 }
