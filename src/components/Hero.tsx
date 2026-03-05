@@ -55,12 +55,13 @@ export function Hero() {
           {/* Headline + subheading */}
           <div className="max-w-2xl mt-4">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl leading-tight">
-              The usage layer OpenAI forgot to build.
+              Track every LLM user. Enforce limits directly in your code.
             </h1>
-            <p className="mt-5 text-base text-white/80 max-w-lg sm:text-lg leading-relaxed">
-              Track what every user costs, enforce limits before they hurt, and
-              surface quality issues — all in one proxy. No SDK changes.
-              Sub-10ms overhead.
+            <p className="mt-5 text-base text-white/80 max-w-2xl sm:text-lg leading-relaxed">
+              Tokenist is a Node.js module + REST API that gives you per-user
+              metering, guardrails, and AI-based intent detection. Spot ToS
+              breaches or jailbreak attempts, then block or rate-limit in the
+              same workflow.
             </p>
           </div>
 

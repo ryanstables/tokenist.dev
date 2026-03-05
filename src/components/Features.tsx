@@ -1,51 +1,51 @@
 const features = [
   {
+    title: "Node SDK + REST",
+    description:
+      "Call `tokenist.check()` before your LLM request and `tokenist.record()` afterward. Works in Node via the TypeScript client or any stack via REST.",
+    icon: "🧩",
+  },
+  {
     title: "Per-user cost tracking",
     description:
-      "See exactly what each user is spending, broken down by token type and model. Updated in real-time across 60+ OpenAI models — text, audio, cached, and reasoning tokens all counted.",
+      "Get live token + cost data per user, org, and feature across every OpenAI model you use. Perfect for tiered plans, internal chargebacks, and budgeting.",
     icon: "📊",
   },
   {
-    title: "Rate limits & thresholds",
+    title: "Intent-aware guardrails",
     description:
-      "Set per-user cost or token limits. Enforced at connection time and after every message — connections close automatically when users exceed their allowance, with clean error codes your client can handle.",
-    icon: "🛡️",
+      "GPT-4o-mini labels every conversation (jailbreak, ToS breach, frustration, win). Use those signals to trigger automatic blocks, extra auth, or throttling.",
+    icon: "🧠",
   },
   {
-    title: "AI quality monitoring",
+    title: "Limits & automation",
     description:
-      "Every conversation is automatically classified by GPT-4o-mini on an hourly schedule. Surface task failures, user frustration, jailbreak attempts, and lazy responses — without reading a single log.",
-    icon: "🧠",
+      "Create cost or token rules per user/tier, send Slack/webhook alerts, or auto-upgrade plans when someone hits a threshold.",
+    icon: "⚙️",
   },
   {
     title: "Feature-level attribution",
     description:
-      "Tag requests by product area — voice-assistant, customer-support, onboarding — and see exactly which features are driving your LLM bill. Filter the dashboard by feature in one click.",
+      "Tag each request with `feature` and see which product surfaces burn budget. Route expensive workflows to cheaper models before the bill arrives.",
     icon: "🏷️",
   },
   {
-    title: "User blocklist",
+    title: "Block & throttle users",
     description:
-      "Block abusive or over-limit users instantly by ID. Optionally set a reason and expiry. Blocked users cannot open new connections until you lift the block via the admin API.",
+      "Add anyone to the blocklist (with optional expiry) or impose rolling 24h limits. Perfect for dealing with policy violators without killing the whole app.",
     icon: "🚫",
   },
   {
-    title: "Admin API & dashboard",
+    title: "Dashboards + API parity",
     description:
-      "Query usage, adjust thresholds, and manage users programmatically via REST. Or use the visual dashboard for org-level cost overviews, period filters, and per-user breakdowns.",
-    icon: "⚡",
+      "Everything you can do in the dashboard (usage, limits, alerts) is available through the API. Automate whatever you don’t want to click through manually.",
+    icon: "📈",
   },
   {
-    title: "Usage windows",
+    title: "Audit-ready logs",
     description:
-      "Configure limits on a daily, monthly, or rolling 24-hour window. Set a default for your whole org, then override per user when you need to give someone more headroom.",
-    icon: "📅",
-  },
-  {
-    title: "Transparent proxy",
-    description:
-      "Sub-10ms added latency. Tokenist relays WebSocket traffic bidirectionally with lightweight policy checks — your users get the same low-latency experience as calling OpenAI directly.",
-    icon: "🔄",
+      "Store request/response metadata for compliance and debugging. Opt-in to full payload logging when you need it, keep it lean when you don’t.",
+    icon: "🗃️",
   },
 ];
 
@@ -58,11 +58,11 @@ export function Features() {
             Features
           </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
-            Everything you need to control your LLM spend
+            The guardrails layer for every AI product
           </h2>
           <p className="mt-4 text-lg text-[var(--fg-muted)]">
-            Drop-in proxy with no SDK lock-in. Point your client at Tokenist,
-            add identity headers, and you&apos;re live.
+            No proxies, no infra surgery. Just import the SDK (or call the REST
+            API) and start tracking.
           </p>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

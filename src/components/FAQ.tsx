@@ -4,28 +4,28 @@ import { useState } from "react";
 
 const faqs = [
   {
-    q: "How long does integration actually take?",
-    a: "Most teams are live in under 30 minutes. You point your WebSocket client at Tokenist instead of OpenAI, add two headers (x-user-id and optionally x-org-id), and guardrails apply automatically. No SDK to install, no application logic to restructure.",
+    q: "Do I have to change how I call OpenAI?",
+    a: "No. Tokenist sits in your server-side code. You keep using the OpenAI SDK (or any HTTP client) exactly as you do today. You just wrap requests with `tokenist.check()` and `tokenist.record()` (or call the REST endpoints) so we can track usage and apply guardrails.",
   },
   {
-    q: "What happens to my users when they hit a limit?",
-    a: "If a user is already over limit at connection time, the connection is rejected before it opens. During an active session, connections are closed immediately when a user exceeds their threshold. Tokenist returns a defined close code (4004 for threshold exceeded, 4003 for blocked) so your client can handle it — show an upgrade prompt, a friendly message, or gracefully degrade.",
+    q: "What does the AI intent detection actually do?",
+    a: "We send each logged conversation through GPT-4o-mini to classify intent: jailbreak attempt, ToS breach, user frustration, lazy response, win, etc. You can see those labels in the dashboard and also use them to trigger automations — e.g., auto-block jailbreakers or throttle users who keep slamming your support bot.",
   },
   {
-    q: "Is my LLM traffic stored on your servers?",
-    a: "Tokenist logs request and response metadata (token counts, model, latency, user ID) for tracking and analysis. Full request/response payloads are only stored if you explicitly use the /sdk/log endpoint. You control what gets logged. Data is stored on Cloudflare's infrastructure.",
+    q: "How do I block or rate-limit someone once a label is triggered?",
+    a: "Use the blocklist API or create rules tied to the sentiment labels. Example: if `intent` includes `jailbreaking`, call `/admin/block` for that userId or drop their token quota to zero until they contact support.",
   },
   {
-    q: "What if Tokenist goes down — does it take my app with it?",
-    a: "Tokenist runs on Cloudflare Workers, which has 99.99%+ uptime and runs at the edge globally. That said, as a proxy it sits in your request path — we recommend implementing a fallback or circuit breaker in production that bypasses Tokenist and calls OpenAI directly if the proxy becomes unreachable.",
+    q: "Where is the data stored?",
+    a: "Usage metadata lives on Cloudflare's infrastructure (Workers + D1). Full payload logging is opt-in: call `/sdk/log` only when you want to retain complete transcripts for compliance or QA.",
   },
   {
-    q: "Can I use this with models other than OpenAI?",
-    a: "The current implementation targets the OpenAI Realtime and Chat Completions APIs. The architecture is provider-agnostic — the proxy can be configured to point at any compatible endpoint — but Tokenist's built-in pricing and model support today covers OpenAI's model catalogue.",
+    q: "Can I use Tokenist outside of Node?",
+    a: "Yes. The REST API exposes the same functionality as the Node module, so you can integrate from Python, Go, Rust — whatever runs your backend.",
   },
   {
-    q: "How is the AI quality monitoring implemented?",
-    a: "Every request logged via /sdk/log is queued for classification by GPT-4o-mini, which runs on a cron schedule (top of every hour). It labels conversations with outcomes like task_failure, user_frustration, jailbreaking, and win. Labels appear as pills in the dashboard Logs view and are aggregated on the Insights page. No configuration required — it runs automatically on all logged requests.",
+    q: "How long does setup take?",
+    a: "Most teams are live in under 30 minutes. Install the npm package, add two hooks before/after your LLM call, and create your first rule in the dashboard.",
   },
 ];
 
