@@ -1,100 +1,120 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
 const tiers = [
   {
     name: "Free",
-    tagline: "Startups and side projects",
-    price: "$0",
-    period: "/mo",
-    quota: "Up to 10M tokens monitored",
-    overage: "10¢ per 1M extra tokens",
+    tagline: "Side projects and early evaluation",
+    monthly: 0,
+    quota: "25,000 requests / mo",
+    overage: null,
     features: [
       "Full enforcement — rate limits & blocklist",
-      "Basic dashboard + raw log export",
+      "AI intent labels (jailbreak, ToS breach)",
+      "Basic dashboard + CSV export",
       "Community support",
       "No credit card required",
     ],
     cta: "Get started free",
-    href: "#",
+    ctaAction: "register",
     highlighted: false,
   },
   {
     name: "Starter",
-    tagline: "Early commercial apps",
-    price: "$29",
-    period: "/mo",
-    quota: "50M tokens monitored",
-    overage: "8¢ per 1M tokens",
+    tagline: "Early commercial apps going to market",
+    monthly: 49,
+    annual: 490,
+    quota: "150,000 requests / mo",
+    overage: "$0.50 per 1,000 extra requests",
     features: [
-      "Basic analytics",
-      "Threshold alert emails",
-      "Per-org dashboarding",
+      "Everything in Free",
+      "Email & Slack threshold alerts",
+      "Per-feature cost attribution",
+      "30-day log retention",
+      "Email support",
     ],
-    annual: "$290/yr — ~2 months free",
     cta: "Start free trial",
-    href: "#",
+    ctaAction: "register",
     highlighted: true,
   },
   {
     name: "Growth",
     tagline: "Growing products with real traffic",
-    price: "$199",
-    period: "/mo",
-    quota: "200M tokens monitored",
-    overage: "6¢ per 1M tokens",
+    monthly: 199,
+    annual: 1990,
+    quota: "750,000 requests / mo",
+    overage: "$0.30 per 1,000 extra requests",
     features: [
-      "Cohort token usage segmentation",
-      "Slack alerts & webhook integrations",
-      "90-day data retention",
+      "Everything in Starter",
+      "Webhook automations (e.g. auto-block on intent label)",
+      "Cohort analysis + user segmentation",
+      "90-day log retention",
+      "Priority support",
     ],
-    annual: "$1,990/yr — ~2 months free",
     cta: "Start free trial",
-    href: "#",
-    highlighted: false,
-  },
-  {
-    name: "Pro",
-    tagline: "High-volume and enterprise needs",
-    price: "$799",
-    period: "/mo",
-    quota: "1B tokens monitored",
-    overage: "4¢ per 1M tokens",
-    features: [
-      "Priority support + SLA guarantees",
-      "Anomaly detection & model impact alerts",
-      "Export to external data stores",
-      "Unlimited dashboards",
-    ],
-    annual: "$7,990/yr",
-    cta: "Contact sales",
-    href: "#",
+    ctaAction: "register",
     highlighted: false,
   },
 ];
 
 export function Pricing() {
+  const [annual, setAnnual] = useState(false);
+
   return (
     <section id="pricing" className="scroll-mt-20 bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="mx-auto max-w-2xl text-center">
           <span className="mb-4 inline-block rounded-full border border-[var(--border)] bg-[var(--accent-light)] px-4 py-1 text-sm font-medium text-[var(--accent-dim)]">
             Pricing
           </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
-            Simple, usage-based pricing
+            Simple pricing, based on requests
           </h2>
           <p className="mt-4 text-lg text-[var(--fg-muted)]">
-            Pay for tokens monitored. Start free, scale as you grow. We&apos;ll
-            alert you before overages kick in.
+            Pay for requests tracked. Start free, no credit card needed. We&apos;ll
+            alert you before you hit your limit.
           </p>
+          {/* Annual toggle */}
+          <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-[var(--border)] bg-white px-4 py-2">
+            <button
+              type="button"
+              onClick={() => setAnnual(false)}
+              className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                !annual
+                  ? "bg-[var(--accent)] text-white"
+                  : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              type="button"
+              onClick={() => setAnnual(true)}
+              className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+                annual
+                  ? "bg-[var(--accent)] text-white"
+                  : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
+              }`}
+            >
+              Annual
+              <span className="ml-1.5 rounded-full bg-[var(--success)]/20 px-1.5 py-0.5 text-xs font-semibold text-[var(--success)]">
+                2 months free
+              </span>
+            </button>
+          </div>
         </div>
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+        {/* Tier cards */}
+        <div className="mt-12 grid gap-6 sm:grid-cols-3">
           {tiers.map((tier) => (
             <div
               key={tier.name}
               className={`relative flex flex-col rounded-2xl border p-6 transition-shadow hover:shadow-md ${
                 tier.highlighted
-                  ? "border-[var(--accent)] bg-[var(--accent)]/5 shadow-md"
+                  ? "border-[var(--accent)] bg-white shadow-md"
                   : "border-[var(--border-subtle)] bg-white"
               }`}
             >
@@ -107,24 +127,45 @@ export function Pricing() {
                 {tier.name}
               </h3>
               <p className="mt-1 text-xs text-[var(--fg-muted)]">{tier.tagline}</p>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="font-display text-3xl font-bold text-[var(--fg)]">
-                  {tier.price}
-                </span>
-                <span className="text-[var(--fg-muted)]">{tier.period}</span>
+
+              {/* Price */}
+              <div className="mt-5 flex items-baseline gap-1">
+                {tier.monthly === 0 ? (
+                  <span className="font-display text-3xl font-bold text-[var(--fg)]">$0</span>
+                ) : annual && tier.annual ? (
+                  <>
+                    <span className="font-display text-3xl font-bold text-[var(--fg)]">
+                      ${Math.round(tier.annual / 12)}
+                    </span>
+                    <span className="text-[var(--fg-muted)]">/mo</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-display text-3xl font-bold text-[var(--fg)]">
+                      ${tier.monthly}
+                    </span>
+                    <span className="text-[var(--fg-muted)]">/mo</span>
+                  </>
+                )}
               </div>
-              {tier.annual && (
-                <p className="mt-1 text-xs text-[var(--fg-muted)]">
-                  {tier.annual}
+              {annual && tier.annual && (
+                <p className="mt-0.5 text-xs text-[var(--fg-muted)]">
+                  ${tier.annual}/yr — billed annually
                 </p>
               )}
-              <div className="mt-3 rounded-lg bg-[var(--bg-elevated)] px-3 py-2">
-                <p className="text-sm font-medium text-[var(--fg)]">
-                  {tier.quota}
-                </p>
-                <p className="text-xs text-[var(--fg-muted)]">Overage: {tier.overage}</p>
+
+              {/* Quota */}
+              <div className="mt-4 rounded-lg bg-[var(--bg-elevated)] px-3 py-2.5">
+                <p className="text-sm font-semibold text-[var(--fg)]">{tier.quota}</p>
+                {tier.overage ? (
+                  <p className="text-xs text-[var(--fg-muted)]">Then: {tier.overage}</p>
+                ) : (
+                  <p className="text-xs text-[var(--fg-muted)]">No credit card required</p>
+                )}
               </div>
-              <ul className="mt-5 flex-1 space-y-2 text-sm text-[var(--fg-muted)]">
+
+              {/* Features */}
+              <ul className="mt-5 flex-1 space-y-2.5 text-sm text-[var(--fg-muted)]">
                 {tier.features.map((f) => (
                   <li key={f} className="flex items-start gap-2">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
@@ -132,8 +173,10 @@ export function Pricing() {
                   </li>
                 ))}
               </ul>
+
+              {/* CTA */}
               <Link
-                href={tier.href}
+                href="#"
                 className={`mt-6 block rounded-xl py-2.5 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
                   tier.highlighted
                     ? "bg-[var(--accent)] text-white shadow-sm"
@@ -147,33 +190,44 @@ export function Pricing() {
         </div>
 
         {/* Enterprise */}
-        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-white p-6 sm:p-8">
+        <div className="mt-6 rounded-2xl border border-[var(--border)] bg-white p-6 sm:p-8">
           <div className="sm:flex sm:items-center sm:justify-between sm:gap-8">
             <div>
-              <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
-                Enterprise
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
+                  Enterprise
+                </h3>
+                <span className="rounded-full border border-[var(--border)] px-2 py-0.5 text-xs text-[var(--fg-muted)]">
+                  1M+ requests / mo
+                </span>
+              </div>
               <p className="mt-1 text-sm text-[var(--fg-muted)]">
-                Custom quota (1B+ tokens), dedicated support, SLA, and
-                onboarding. Extended data retention, custom governance, and
-                volume pricing.
+                Custom request volume, extended data retention, SSO + RBAC,
+                dedicated SLA, and custom integrations — including on-prem options.
               </p>
-              <p className="mt-2 text-sm font-medium text-[var(--fg)]">
-                Typically $20,000+/yr — custom quotes based on volume.
-              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {["SSO + RBAC", "Dedicated SLA", "Custom retention", "On-prem option", "Dedicated Slack channel"].map((f) => (
+                  <span
+                    key={f}
+                    className="rounded-full border border-[var(--border)] bg-[var(--bg-elevated)] px-2.5 py-0.5 text-xs text-[var(--fg-muted)]"
+                  >
+                    {f}
+                  </span>
+                ))}
+              </div>
             </div>
             <Link
               href="#"
-              className="mt-4 inline-block shrink-0 rounded-xl border border-[var(--border)] px-6 py-2.5 text-sm font-medium text-[var(--fg)] transition-colors hover:border-[var(--accent)] sm:mt-0"
+              className="mt-4 inline-block shrink-0 rounded-xl border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--fg)] transition-colors hover:border-[var(--accent)] sm:mt-0"
             >
-              Contact sales
+              Contact us
             </Link>
           </div>
         </div>
 
-        <p className="mt-6 text-center text-sm text-[var(--fg-muted)]">
-          Optional add-ons: Premium Alerts & Automation +$49/mo · Dedicated
-          Support +$150/mo · Extended data retention (360 days) +$100/mo
+        {/* Footnote */}
+        <p className="mt-5 text-center text-sm text-[var(--fg-muted)]">
+          All paid plans include a 14-day free trial · Cancel any time · No credit card required to start
         </p>
       </div>
     </section>
