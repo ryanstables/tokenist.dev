@@ -1,51 +1,51 @@
 const features = [
   {
-    title: "Identity & headers",
+    title: "Per-user cost tracking",
     description:
-      "Clients send x-user-id (required) and optional x-org-id on the WebSocket handshake. In-memory or MongoDB modes; proxy API keys (ug_...) when using MongoDB.",
-    icon: "🔑",
+      "See exactly what each user is spending, broken down by token type and model. Updated in real-time across 60+ OpenAI models — text, audio, cached, and reasoning tokens all counted.",
+    icon: "📊",
   },
   {
-    title: "Per-user usage & cost",
+    title: "Rate limits & thresholds",
     description:
-      "Input and output tokens estimated from realtime events. Cost from configurable model pricing. In-memory (LRU) or MongoDB; optional Redis for multi-instance.",
-    icon: "📊",
+      "Set per-user cost or token limits. Enforced at connection time and after every message — connections close automatically when users exceed their allowance, with clean error codes your client can handle.",
+    icon: "🛡️",
+  },
+  {
+    title: "AI quality monitoring",
+    description:
+      "Every conversation is automatically classified by GPT-4o-mini on an hourly schedule. Surface task failures, user frustration, jailbreak attempts, and lazy responses — without reading a single log.",
+    icon: "🧠",
+  },
+  {
+    title: "Feature-level attribution",
+    description:
+      "Tag requests by product area — voice-assistant, customer-support, onboarding — and see exactly which features are driving your LLM bill. Filter the dashboard by feature in one click.",
+    icon: "🏷️",
+  },
+  {
+    title: "User blocklist",
+    description:
+      "Block abusive or over-limit users instantly by ID. Optionally set a reason and expiry. Blocked users cannot open new connections until you lift the block via the admin API.",
+    icon: "🚫",
+  },
+  {
+    title: "Admin API & dashboard",
+    description:
+      "Query usage, adjust thresholds, and manage users programmatically via REST. Or use the visual dashboard for org-level cost overviews, period filters, and per-user breakdowns.",
+    icon: "⚡",
   },
   {
     title: "Usage windows",
     description:
-      "When MongoDB is enabled: daily (UTC midnight), monthly, or rolling_24h. Default and per-user window configurable.",
+      "Configure limits on a daily, monthly, or rolling 24-hour window. Set a default for your whole org, then override per user when you need to give someone more headroom.",
     icon: "📅",
   },
   {
-    title: "Guardrail thresholds",
+    title: "Transparent proxy",
     description:
-      "Per-user max_cost_usd and max_total_tokens. Enforced on connect and after each message; connection closed with defined close codes when exceeded.",
-    icon: "🛡️",
-  },
-  {
-    title: "Blocklist",
-    description:
-      "Block by user ID with optional reason and expiry. Unblock and list blocked users via admin API. Blocked users cannot open new connections.",
-    icon: "🚫",
-  },
-  {
-    title: "Admin HTTP API",
-    description:
-      "Health, user usage, list users, set threshold, block/unblock, list blocked. With MongoDB: create user, rotate key, usage by period, org summary.",
-    icon: "⚡",
-  },
-  {
-    title: "Dashboard",
-    description:
-      "React + Next.js app for org-level visibility: total cost, filters by period (monthly/daily/rolling 24h), feature, and users. Refreshes on interval and focus.",
-    icon: "📈",
-  },
-  {
-    title: "Protocols & latency",
-    description:
-      "WebSocket primary; WebRTC supported. Designed for sub-10ms added latency; bidirectional relay with lightweight parsing and policy checks.",
-    icon: "⚡",
+      "Sub-10ms added latency. Tokenist relays WebSocket traffic bidirectionally with lightweight policy checks — your users get the same low-latency experience as calling OpenAI directly.",
+    icon: "🔄",
   },
 ];
 
@@ -58,11 +58,11 @@ export function Features() {
             Features
           </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
-            Everything you need to control realtime AI usage
+            Everything you need to control your LLM spend
           </h2>
           <p className="mt-4 text-lg text-[var(--fg-muted)]">
-            Developer-friendly, minimal configuration. No SDK lock-in—just a
-            thin proxy that enforces limits and keeps usage under your control.
+            Drop-in proxy with no SDK lock-in. Point your client at Tokenist,
+            add identity headers, and you&apos;re live.
           </p>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -80,36 +80,6 @@ export function Features() {
               <p className="mt-2 text-sm leading-relaxed text-[var(--fg-muted)]">{f.description}</p>
             </div>
           ))}
-        </div>
-
-        {/* Connection close codes */}
-        <div className="mt-12 rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6 sm:p-8">
-          <div className="sm:flex sm:items-start sm:gap-8">
-            <div className="sm:flex-1">
-              <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
-                Connection close codes
-              </h3>
-              <p className="mt-1 text-sm text-[var(--fg-muted)]">
-                Consistent close codes so clients can handle failures gracefully.
-              </p>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:mt-0 sm:w-80">
-              {[
-                { code: "4001", meaning: "Missing user ID" },
-                { code: "4003", meaning: "User blocked" },
-                { code: "4004", meaning: "Threshold exceeded" },
-                { code: "4502", meaning: "Upstream error" },
-              ].map((row) => (
-                <div
-                  key={row.code}
-                  className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white px-3 py-2.5"
-                >
-                  <span className="font-mono text-sm font-semibold text-[var(--accent)]">{row.code}</span>
-                  <span className="text-xs text-[var(--fg-muted)]">{row.meaning}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </section>

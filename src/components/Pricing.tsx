@@ -3,15 +3,16 @@ import Link from "next/link";
 const tiers = [
   {
     name: "Free",
-    tagline: "Startups, small projects, early testing",
+    tagline: "Startups and side projects",
     price: "$0",
     period: "/mo",
     quota: "Up to 10M tokens monitored",
     overage: "10¢ per 1M extra tokens",
     features: [
-      "Full core enforcement",
-      "Basic dashboards + raw log export",
-      "Community/email support",
+      "Full enforcement — rate limits & blocklist",
+      "Basic dashboard + raw log export",
+      "Community support",
+      "No credit card required",
     ],
     cta: "Get started free",
     href: "#",
@@ -19,7 +20,7 @@ const tiers = [
   },
   {
     name: "Starter",
-    tagline: "Early commercial apps testing guardrails",
+    tagline: "Early commercial apps",
     price: "$29",
     period: "/mo",
     quota: "50M tokens monitored",
@@ -29,39 +30,38 @@ const tiers = [
       "Threshold alert emails",
       "Per-org dashboarding",
     ],
-    annual: "$290/yr (~2 months free)",
-    cta: "Start trial",
+    annual: "$290/yr — ~2 months free",
+    cta: "Start free trial",
     href: "#",
     highlighted: true,
   },
   {
     name: "Growth",
-    tagline: "Growing products with more users and activity",
+    tagline: "Growing products with real traffic",
     price: "$199",
     period: "/mo",
     quota: "200M tokens monitored",
     overage: "6¢ per 1M tokens",
     features: [
-      "Rich dashboards + cohort token usage segmentation",
+      "Cohort token usage segmentation",
       "Slack alerts & webhook integrations",
-      "Longer data retention (e.g. 90 days)",
+      "90-day data retention",
     ],
-    annual: "$1,990/yr (~2 months free)",
-    cta: "Contact sales",
+    annual: "$1,990/yr — ~2 months free",
+    cta: "Start free trial",
     href: "#",
     highlighted: false,
   },
   {
     name: "Pro",
-    tagline: "Serious usage and enterprise needs",
+    tagline: "High-volume and enterprise needs",
     price: "$799",
     period: "/mo",
     quota: "1B tokens monitored",
     overage: "4¢ per 1M tokens",
     features: [
-      "Priority support",
-      "SLA guarantees",
-      "Advanced alerting (anomalies, model impact)",
+      "Priority support + SLA guarantees",
+      "Anomaly detection & model impact alerts",
       "Export to external data stores",
       "Unlimited dashboards",
     ],
@@ -74,7 +74,7 @@ const tiers = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="scroll-mt-20 bg-white py-20 sm:py-24 lg:py-28">
+    <section id="pricing" className="scroll-mt-20 bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <span className="mb-4 inline-block rounded-full border border-[var(--border)] bg-[var(--accent-light)] px-4 py-1 text-sm font-medium text-[var(--accent-dim)]">
@@ -84,7 +84,8 @@ export function Pricing() {
             Simple, usage-based pricing
           </h2>
           <p className="mt-4 text-lg text-[var(--fg-muted)]">
-            Pay for tokens monitored. Generous free tier; scale as you grow.
+            Pay for tokens monitored. Start free, scale as you grow. We&apos;ll
+            alert you before overages kick in.
           </p>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -99,7 +100,7 @@ export function Pricing() {
             >
               {tier.highlighted && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)] px-3 py-1 text-xs font-semibold text-white shadow-sm">
-                  Popular
+                  Most popular
                 </span>
               )}
               <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
@@ -146,18 +147,19 @@ export function Pricing() {
         </div>
 
         {/* Enterprise */}
-        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6 sm:p-8">
+        <div className="mt-8 rounded-2xl border border-[var(--border)] bg-white p-6 sm:p-8">
           <div className="sm:flex sm:items-center sm:justify-between sm:gap-8">
             <div>
               <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
                 Enterprise
               </h3>
               <p className="mt-1 text-sm text-[var(--fg-muted)]">
-                Custom quota (1B+), dedicated support, SLA, onboarding. Custom
-                limits for telemetry retention and org governance.
+                Custom quota (1B+ tokens), dedicated support, SLA, and
+                onboarding. Extended data retention, custom governance, and
+                volume pricing.
               </p>
               <p className="mt-2 text-sm font-medium text-[var(--fg)]">
-                Typically $20,000+/yr — custom quotes based on volume and needs.
+                Typically $20,000+/yr — custom quotes based on volume.
               </p>
             </div>
             <Link
@@ -170,8 +172,8 @@ export function Pricing() {
         </div>
 
         <p className="mt-6 text-center text-sm text-[var(--fg-muted)]">
-          Optional add-ons: Premium Alerts & Automation +$49/mo, Dedicated
-          Support/CSM +$150/mo, Longer Data Retention (360 days) +$100/mo.
+          Optional add-ons: Premium Alerts & Automation +$49/mo · Dedicated
+          Support +$150/mo · Extended data retention (360 days) +$100/mo
         </p>
       </div>
     </section>
