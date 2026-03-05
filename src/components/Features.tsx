@@ -1,51 +1,51 @@
 const features = [
   {
-    title: "Identity & headers",
+    title: "Node SDK + REST",
     description:
-      "Clients send x-user-id (required) and optional x-org-id on the WebSocket handshake. In-memory or MongoDB modes; proxy API keys (ug_...) when using MongoDB.",
-    icon: "🔑",
+      "Call `tokenist.check()` before your LLM request and `tokenist.record()` afterward. Works in Node via the TypeScript client or any stack via REST.",
+    icon: "🧩",
   },
   {
-    title: "Per-user usage & cost",
+    title: "Per-user cost tracking",
     description:
-      "Input and output tokens estimated from realtime events. Cost from configurable model pricing. In-memory (LRU) or MongoDB; optional Redis for multi-instance.",
+      "Get live token + cost data per user, org, and feature across every OpenAI model you use. Perfect for tiered plans, internal chargebacks, and budgeting.",
     icon: "📊",
   },
   {
-    title: "Usage windows",
+    title: "Intent-aware guardrails",
     description:
-      "When MongoDB is enabled: daily (UTC midnight), monthly, or rolling_24h. Default and per-user window configurable.",
-    icon: "📅",
+      "GPT-4o-mini labels every conversation (jailbreak, ToS breach, frustration, win). Use those signals to trigger automatic blocks, extra auth, or throttling.",
+    icon: "🧠",
   },
   {
-    title: "Guardrail thresholds",
+    title: "Limits & automation",
     description:
-      "Per-user max_cost_usd and max_total_tokens. Enforced on connect and after each message; connection closed with defined close codes when exceeded.",
-    icon: "🛡️",
+      "Create cost or token rules per user/tier, send Slack/webhook alerts, or auto-upgrade plans when someone hits a threshold.",
+    icon: "⚙️",
   },
   {
-    title: "Blocklist",
+    title: "Feature-level attribution",
     description:
-      "Block by user ID with optional reason and expiry. Unblock and list blocked users via admin API. Blocked users cannot open new connections.",
+      "Tag each request with `feature` and see which product surfaces burn budget. Route expensive workflows to cheaper models before the bill arrives.",
+    icon: "🏷️",
+  },
+  {
+    title: "Block & throttle users",
+    description:
+      "Add anyone to the blocklist (with optional expiry) or impose rolling 24h limits. Perfect for dealing with policy violators without killing the whole app.",
     icon: "🚫",
   },
   {
-    title: "Admin HTTP API",
+    title: "Dashboards + API parity",
     description:
-      "Health, user usage, list users, set threshold, block/unblock, list blocked. With MongoDB: create user, rotate key, usage by period, org summary.",
-    icon: "⚡",
-  },
-  {
-    title: "Dashboard",
-    description:
-      "React + Next.js app for org-level visibility: total cost, filters by period (monthly/daily/rolling 24h), feature, and users. Refreshes on interval and focus.",
+      "Everything you can do in the dashboard (usage, limits, alerts) is available through the API. Automate whatever you don’t want to click through manually.",
     icon: "📈",
   },
   {
-    title: "Protocols & latency",
+    title: "Audit-ready logs",
     description:
-      "WebSocket primary; WebRTC supported. Designed for sub-10ms added latency; bidirectional relay with lightweight parsing and policy checks.",
-    icon: "⚡",
+      "Store request/response metadata for compliance and debugging. Opt-in to full payload logging when you need it, keep it lean when you don’t.",
+    icon: "🗃️",
   },
 ];
 
@@ -58,11 +58,11 @@ export function Features() {
             Features
           </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
-            Everything you need to control realtime AI usage
+            The guardrails layer for every AI product
           </h2>
           <p className="mt-4 text-lg text-[var(--fg-muted)]">
-            Developer-friendly, minimal configuration. No SDK lock-in—just a
-            thin proxy that enforces limits and keeps usage under your control.
+            No proxies, no infra surgery. Just import the SDK (or call the REST
+            API) and start tracking.
           </p>
         </div>
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -80,36 +80,6 @@ export function Features() {
               <p className="mt-2 text-sm leading-relaxed text-[var(--fg-muted)]">{f.description}</p>
             </div>
           ))}
-        </div>
-
-        {/* Connection close codes */}
-        <div className="mt-12 rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6 sm:p-8">
-          <div className="sm:flex sm:items-start sm:gap-8">
-            <div className="sm:flex-1">
-              <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
-                Connection close codes
-              </h3>
-              <p className="mt-1 text-sm text-[var(--fg-muted)]">
-                Consistent close codes so clients can handle failures gracefully.
-              </p>
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-3 sm:mt-0 sm:w-80">
-              {[
-                { code: "4001", meaning: "Missing user ID" },
-                { code: "4003", meaning: "User blocked" },
-                { code: "4004", meaning: "Threshold exceeded" },
-                { code: "4502", meaning: "Upstream error" },
-              ].map((row) => (
-                <div
-                  key={row.code}
-                  className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-white px-3 py-2.5"
-                >
-                  <span className="font-mono text-sm font-semibold text-[var(--accent)]">{row.code}</span>
-                  <span className="text-xs text-[var(--fg-muted)]">{row.meaning}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </section>

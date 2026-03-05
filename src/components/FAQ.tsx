@@ -4,28 +4,28 @@ import { useState } from "react";
 
 const faqs = [
   {
-    q: "What is Tokenist?",
-    a: "Tokenist is a Guardrails as a Service product: a realtime AI API proxy that adds per-user token and cost tracking, usage limits, and enforcement guardrails. You point your client at the proxy URL, send identity headers (x-user-id, optional x-org-id), and guardrails apply automatically—no SDK lock-in.",
+    q: "Do I have to change how I call OpenAI?",
+    a: "No. Tokenist sits in your server-side code. You keep using the OpenAI SDK (or any HTTP client) exactly as you do today. You just wrap requests with `tokenist.check()` and `tokenist.record()` (or call the REST endpoints) so we can track usage and apply guardrails.",
   },
   {
-    q: "How much latency does the proxy add?",
-    a: "The proxy is designed for minimal (sub-10ms) added latency on realtime API calls. Traffic is relayed bidirectionally with only lightweight parsing and policy checks, so end-users get essentially the same experience as calling the provider directly.",
+    q: "What does the AI intent detection actually do?",
+    a: "We send each logged conversation through GPT-4o-mini to classify intent: jailbreak attempt, ToS breach, user frustration, lazy response, win, etc. You can see those labels in the dashboard and also use them to trigger automations — e.g., auto-block jailbreakers or throttle users who keep slamming your support bot.",
   },
   {
-    q: "What identity do I need to send?",
-    a: "Clients must send x-user-id on the WebSocket handshake (required). Optionally send x-org-id for organization-level tracking. In MongoDB mode, clients authenticate with a proxy API key (e.g. ug_...); the server looks up the user and uses the server's provider key for upstream calls.",
+    q: "How do I block or rate-limit someone once a label is triggered?",
+    a: "Use the blocklist API or create rules tied to the sentiment labels. Example: if `intent` includes `jailbreaking`, call `/admin/block` for that userId or drop their token quota to zero until they contact support.",
   },
   {
-    q: "What happens when a user exceeds their limit?",
-    a: "If a user is already over limit at connect time, the connection is rejected. During a session, after each message the proxy updates usage and checks limits; if over limit, the connection is closed with close code 4004 (Threshold exceeded). Your client can handle this and show a message or prompt to upgrade.",
+    q: "Where is the data stored?",
+    a: "Usage metadata lives on Cloudflare's infrastructure (Workers + D1). Full payload logging is opt-in: call `/sdk/log` only when you want to retain complete transcripts for compliance or QA.",
   },
   {
-    q: "What AI providers are supported?",
-    a: "The architecture is a generic proxy: client → Tokenist → upstream provider. The current implementation targets the OpenAI Realtime API; pricing and model names are configurable. Additional providers can be supported via configuration and adapter logic.",
+    q: "Can I use Tokenist outside of Node?",
+    a: "Yes. The REST API exposes the same functionality as the Node module, so you can integrate from Python, Go, Rust — whatever runs your backend.",
   },
   {
-    q: "How is usage stored?",
-    a: "You can run in-memory (LRU) for a single instance—fast, no persistence. For persistence and multi-instance, use MongoDB. Optional Redis can be used for a shared store across instances. Usage windows (daily, monthly, rolling_24h) are supported when MongoDB is enabled.",
+    q: "How long does setup take?",
+    a: "Most teams are live in under 30 minutes. Install the npm package, add two hooks before/after your LLM call, and create your first rule in the dashboard.",
   },
 ];
 
@@ -33,24 +33,24 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="scroll-mt-20 bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
+    <section id="faq" className="scroll-mt-20 bg-white py-20 sm:py-24 lg:py-28">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <span className="mb-4 inline-block rounded-full border border-[var(--border)] bg-[var(--accent-light)] px-4 py-1 text-sm font-medium text-[var(--accent-dim)]">
             FAQ
           </span>
           <h2 className="font-display text-3xl font-bold tracking-tight text-[var(--fg)] sm:text-4xl">
-            Frequently asked questions
+            Common questions
           </h2>
           <p className="mt-4 text-lg text-[var(--fg-muted)]">
-            Common questions about Tokenist and realtime AI guardrails.
+            Everything you need to know before getting started.
           </p>
         </div>
         <div className="mt-12 space-y-3">
           {faqs.map((faq, i) => (
             <div
               key={faq.q}
-              className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-white shadow-sm"
+              className="overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] shadow-sm"
             >
               <button
                 type="button"
