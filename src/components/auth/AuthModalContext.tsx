@@ -1,14 +1,14 @@
 'use client'
 
-import { createContext, useCallback, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import { getToken } from '@/lib/auth'
 import { AuthModal } from './AuthModal'
 
 type AuthModalMode = 'login' | 'register'
 
 interface AuthModalContextValue {
-  openLogin: () => void
-  openRegister: () => void
+  openLogin: (afterAuth?: () => void) => void
+  openRegister: (afterAuth?: () => void) => void
 }
 
 const AuthModalContext = createContext<AuthModalContextValue | null>(null)
@@ -24,21 +24,35 @@ const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:
 export function AuthModalProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
   const [initialMode, setInitialMode] = useState<AuthModalMode>('login')
+  const afterAuthRef = useRef<(() => void) | undefined>(undefined)
 
-  const openLogin = useCallback(() => {
+  const openLogin = useCallback((afterAuth?: () => void) => {
+    afterAuthRef.current = afterAuth
     setInitialMode('login')
     setIsOpen(true)
   }, [])
 
-  const openRegister = useCallback(() => {
+  const openRegister = useCallback((afterAuth?: () => void) => {
+    afterAuthRef.current = afterAuth
     setInitialMode('register')
     setIsOpen(true)
   }, [])
 
-  const handleClose = useCallback(() => setIsOpen(false), [])
+  const handleClose = useCallback(() => {
+    afterAuthRef.current = undefined
+    setIsOpen(false)
+  }, [])
 
   const handleAuthenticated = useCallback((token?: string) => {
     setIsOpen(false)
+    const callback = afterAuthRef.current
+    afterAuthRef.current = undefined
+
+    if (callback) {
+      callback()
+      return
+    }
+
     const authToken = token || getToken()
     if (authToken) {
       window.location.href = `${dashboardUrl}?token=${encodeURIComponent(authToken)}`

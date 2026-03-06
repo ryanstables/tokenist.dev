@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, startTransition } from "react";
 import { useAuthModal } from "./auth";
-import { getToken, clearToken } from "@/lib/auth";
+import { getToken, clearToken, saveToken } from "@/lib/auth";
 
 const nav = [
   { label: "Features", href: "/#features" },
@@ -24,22 +24,29 @@ export function Header() {
     const params = new URLSearchParams(window.location.search);
 
     if (params.get('logout') === 'true') {
-      // Clear the token
       clearToken();
-
-      // Clean URL by removing logout parameter
       params.delete('logout');
       const newUrl = params.toString()
         ? `${window.location.pathname}?${params.toString()}`
         : window.location.pathname;
       window.history.replaceState({}, '', newUrl);
-
-      // User is logged out
       startTransition(() => { setIsLoggedIn(false); });
       return;
     }
 
-    // No logout param - check if user has a valid token
+    // Accept a token passed from the dashboard (different origin, can't share localStorage)
+    const incomingToken = params.get('token');
+    if (incomingToken) {
+      saveToken(incomingToken);
+      params.delete('token');
+      const newUrl = params.toString()
+        ? `${window.location.pathname}?${params.toString()}${window.location.hash}`
+        : `${window.location.pathname}${window.location.hash}`;
+      window.history.replaceState({}, '', newUrl);
+      startTransition(() => { setIsLoggedIn(true); });
+      return;
+    }
+
     startTransition(() => { setIsLoggedIn(!!getToken()); });
   }, []);
 
@@ -123,7 +130,7 @@ export function Header() {
             </>
           ) : (
             <button
-              onClick={openLogin}
+              onClick={() => openLogin()}
               className="rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Login / Register
