@@ -22,9 +22,10 @@ const sections = [
     label: "TypeScript SDK",
     children: [
       { id: "sdk-install", label: "Installation" },
-      { id: "sdk-check", label: "client.sdk.check()" },
-      { id: "sdk-record", label: "client.sdk.record()" },
-      { id: "sdk-log", label: "client.sdk.log()" },
+      { id: "sdk-check", label: "client.check()" },
+      { id: "sdk-record", label: "client.record()" },
+      { id: "sdk-log", label: "client.log()" },
+      { id: "sdk-list-rules", label: "client.listRules()" },
     ],
   },
 ];

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useAuthModal } from "@/components/auth/AuthModalContext";
+import { getToken } from "@/lib/auth";
+import { createCheckoutSession } from "@/lib/stripe";
 
 const tiers = [
   {
@@ -18,7 +20,8 @@ const tiers = [
       "No credit card required",
     ],
     cta: "Get started free",
-    ctaAction: "register",
+    ctaAction: "register" as const,
+    plan: null,
     highlighted: false,
   },
   {
@@ -36,7 +39,8 @@ const tiers = [
       "Email support",
     ],
     cta: "Start free trial",
-    ctaAction: "register",
+    ctaAction: "checkout" as const,
+    plan: "starter" as const,
     highlighted: true,
   },
   {
@@ -54,13 +58,56 @@ const tiers = [
       "Priority support",
     ],
     cta: "Start free trial",
-    ctaAction: "register",
+    ctaAction: "checkout" as const,
+    plan: "growth" as const,
     highlighted: false,
   },
 ];
 
 export function Pricing() {
   const [annual, setAnnual] = useState(false);
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+  const [errorTier, setErrorTier] = useState<{ name: string; message: string } | null>(null);
+  const { openRegister } = useAuthModal();
+
+  const handleTierClick = async (tier: typeof tiers[number]) => {
+    setErrorTier(null);
+
+    if (tier.ctaAction === "register" || tier.plan === null) {
+      openRegister();
+      return;
+    }
+
+    const token = getToken();
+
+    if (!token) {
+      // Not logged in — open register modal, then redirect to checkout after auth
+      openRegister(() => {
+        const freshToken = getToken();
+        if (freshToken && tier.plan) {
+          setLoadingTier(tier.name);
+          const billing = annual ? "annual" : "monthly";
+          createCheckoutSession(tier.plan, billing, freshToken).catch((err: Error) => {
+            setLoadingTier(null);
+            setErrorTier({ name: tier.name, message: err.message });
+          });
+        }
+      });
+      return;
+    }
+
+    setLoadingTier(tier.name);
+    try {
+      const billing = annual ? "annual" : "monthly";
+      await createCheckoutSession(tier.plan, billing, token);
+    } catch (err) {
+      setLoadingTier(null);
+      setErrorTier({
+        name: tier.name,
+        message: err instanceof Error ? err.message : "Something went wrong",
+      });
+    }
+  };
 
   return (
     <section id="pricing" className="scroll-mt-20 bg-[var(--bg-elevated)] py-20 sm:py-24 lg:py-28">
@@ -109,84 +156,123 @@ export function Pricing() {
 
         {/* Tier cards */}
         <div className="mt-12 grid gap-6 sm:grid-cols-3">
-          {tiers.map((tier) => (
-            <div
-              key={tier.name}
-              className={`relative flex flex-col rounded-2xl border p-6 transition-shadow hover:shadow-md ${
-                tier.highlighted
-                  ? "border-[var(--accent)] bg-white shadow-md"
-                  : "border-[var(--border-subtle)] bg-white"
-              }`}
-            >
-              {tier.highlighted && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)] px-3 py-1 text-xs font-semibold text-white shadow-sm">
-                  Most popular
-                </span>
-              )}
-              <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
-                {tier.name}
-              </h3>
-              <p className="mt-1 text-xs text-[var(--fg-muted)]">{tier.tagline}</p>
+          {tiers.map((tier) => {
+            const isLoading = loadingTier === tier.name;
+            const tierError = errorTier?.name === tier.name ? errorTier.message : null;
 
-              {/* Price */}
-              <div className="mt-5 flex items-baseline gap-1">
-                {tier.monthly === 0 ? (
-                  <span className="font-display text-3xl font-bold text-[var(--fg)]">$0</span>
-                ) : annual && tier.annual ? (
-                  <>
-                    <span className="font-display text-3xl font-bold text-[var(--fg)]">
-                      ${Math.round(tier.annual / 12)}
-                    </span>
-                    <span className="text-[var(--fg-muted)]">/mo</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="font-display text-3xl font-bold text-[var(--fg)]">
-                      ${tier.monthly}
-                    </span>
-                    <span className="text-[var(--fg-muted)]">/mo</span>
-                  </>
-                )}
-              </div>
-              {annual && tier.annual && (
-                <p className="mt-0.5 text-xs text-[var(--fg-muted)]">
-                  ${tier.annual}/yr — billed annually
-                </p>
-              )}
-
-              {/* Quota */}
-              <div className="mt-4 rounded-lg bg-[var(--bg-elevated)] px-3 py-2.5">
-                <p className="text-sm font-semibold text-[var(--fg)]">{tier.quota}</p>
-                {tier.overage ? (
-                  <p className="text-xs text-[var(--fg-muted)]">Then: {tier.overage}</p>
-                ) : (
-                  <p className="text-xs text-[var(--fg-muted)]">No credit card required</p>
-                )}
-              </div>
-
-              {/* Features */}
-              <ul className="mt-5 flex-1 space-y-2.5 text-sm text-[var(--fg-muted)]">
-                {tier.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              <Link
-                href="#"
-                className={`mt-6 block rounded-xl py-2.5 text-center text-sm font-semibold transition-opacity hover:opacity-90 ${
+            return (
+              <div
+                key={tier.name}
+                className={`relative flex flex-col rounded-2xl border p-6 transition-shadow hover:shadow-md ${
                   tier.highlighted
-                    ? "bg-[var(--accent)] text-white shadow-sm"
-                    : "border border-[var(--border)] text-[var(--fg)] hover:border-[var(--accent)]"
+                    ? "border-[var(--accent)] bg-white shadow-md"
+                    : "border-[var(--border-subtle)] bg-white"
                 }`}
               >
-                {tier.cta}
-              </Link>
-            </div>
-          ))}
+                {tier.highlighted && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[var(--accent)] px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                    Most popular
+                  </span>
+                )}
+                <h3 className="font-display text-lg font-semibold text-[var(--fg)]">
+                  {tier.name}
+                </h3>
+                <p className="mt-1 text-xs text-[var(--fg-muted)]">{tier.tagline}</p>
+
+                {/* Price */}
+                <div className="mt-5 flex items-baseline gap-1">
+                  {tier.monthly === 0 ? (
+                    <span className="font-display text-3xl font-bold text-[var(--fg)]">$0</span>
+                  ) : annual && tier.annual ? (
+                    <>
+                      <span className="font-display text-3xl font-bold text-[var(--fg)]">
+                        ${Math.round(tier.annual / 12)}
+                      </span>
+                      <span className="text-[var(--fg-muted)]">/mo</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-display text-3xl font-bold text-[var(--fg)]">
+                        ${tier.monthly}
+                      </span>
+                      <span className="text-[var(--fg-muted)]">/mo</span>
+                    </>
+                  )}
+                </div>
+                {annual && tier.annual && (
+                  <p className="mt-0.5 text-xs text-[var(--fg-muted)]">
+                    ${tier.annual}/yr — billed annually
+                  </p>
+                )}
+
+                {/* Quota */}
+                <div className="mt-4 rounded-lg bg-[var(--bg-elevated)] px-3 py-2.5">
+                  <p className="text-sm font-semibold text-[var(--fg)]">{tier.quota}</p>
+                  {tier.overage ? (
+                    <p className="text-xs text-[var(--fg-muted)]">Then: {tier.overage}</p>
+                  ) : (
+                    <p className="text-xs text-[var(--fg-muted)]">No credit card required</p>
+                  )}
+                </div>
+
+                {/* Features */}
+                <ul className="mt-5 flex-1 space-y-2.5 text-sm text-[var(--fg-muted)]">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <button
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => handleTierClick(tier)}
+                  className={`mt-6 flex w-full items-center justify-center rounded-xl py-2.5 text-center text-sm font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-60 hover:opacity-90 ${
+                    tier.highlighted
+                      ? "bg-[var(--accent)] text-white shadow-sm"
+                      : "border border-[var(--border)] text-[var(--fg)] hover:border-[var(--accent)]"
+                  }`}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg
+                        className="mr-2 h-4 w-4 animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      Redirecting…
+                    </>
+                  ) : (
+                    tier.cta
+                  )}
+                </button>
+
+                {/* Per-tier error */}
+                {tierError && (
+                  <p className="mt-2 text-center text-xs text-red-600">{tierError}</p>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Enterprise */}
@@ -216,12 +302,12 @@ export function Pricing() {
                 ))}
               </div>
             </div>
-            <Link
-              href="#"
+            <a
+              href="mailto:hello@tokenist.dev"
               className="mt-4 inline-block shrink-0 rounded-xl border border-[var(--border)] px-6 py-2.5 text-sm font-semibold text-[var(--fg)] transition-colors hover:border-[var(--accent)] sm:mt-0"
             >
               Contact us
-            </Link>
+            </a>
           </div>
         </div>
 

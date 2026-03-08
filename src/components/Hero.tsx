@@ -75,7 +75,7 @@ export function Hero() {
                 <button
                   type="button"
                   className="inline-flex items-center justify-center rounded-lg bg-[var(--accent)] px-6 py-3 font-semibold text-white shadow-lg transition-opacity hover:opacity-90"
-                  onClick={openRegister}
+                  onClick={() => openRegister()}
                 >
                   Get your API key
                 </button>

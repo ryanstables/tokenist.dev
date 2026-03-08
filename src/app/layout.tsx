@@ -15,6 +15,14 @@ export const metadata: Metadata = {
   title: "Tokenist — Guardrails as a Service for Realtime AI APIs",
   description:
     "Per-user token and cost tracking, usage limits, and enforcement guardrails for OpenAI Realtime API. Minimal config, sub-10ms latency.",
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png" }],
+    other: [{ rel: "manifest", url: "/site.webmanifest" }],
+  },
   openGraph: {
     title: "Tokenist — Guardrails as a Service",
     description:
