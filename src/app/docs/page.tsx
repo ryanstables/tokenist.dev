@@ -593,6 +593,123 @@ interface SdkCheckResponse {
 }`}</CodeBlock>
               </div>
 
+              {/* client.listRules() */}
+              <div id="sdk-list-rules" className="mt-12 scroll-mt-24">
+                <h3 className="text-lg font-semibold text-[var(--fg)]">
+                  client.listRules()
+                </h3>
+                <p className="mt-2 text-[var(--fg-muted)]">
+                  Retrieve all rules configured for an organisation. Returns an array of{" "}
+                  <InlineCode>Rule</InlineCode> objects, each carrying the full rule
+                  definition — trigger conditions (token limits, cost thresholds, policy
+                  violations), restriction config (rate-limit windows, throttle delays,
+                  blocks), subject targeting, and timestamps.
+                </p>
+                <p className="mt-2 text-[var(--fg-muted)]">
+                  Also available as{" "}
+                  <InlineCode>client.admin.listRules(orgId, opts?)</InlineCode> when you
+                  need the paginated wrapper including the <InlineCode>total</InlineCode> count.
+                </p>
+                <div className="mt-4 space-y-4">
+                  <CodeBlock>{`import type { Rule, ListRulesOptions } from "tokenist-js";
+
+// All rules for an org
+const rules: Rule[] = await tokenist.listRules("org_123");
+
+// Narrow to active rate-limit rules only
+const rateLimits: Rule[] = await tokenist.listRules("org_123", {
+  restrictionType: "rate_limit",
+  enabled: true,
+});
+
+// Paginated variant with total count
+const { rules: list, total } = await tokenist.admin.listRules("org_123");`}</CodeBlock>
+                </div>
+
+                <h4 className="mt-6 text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+                  Options
+                </h4>
+                <ParamTable
+                  label="ListRulesOptions"
+                  params={[
+                    { name: "subjectType", type: '"user" | "group" | "feature"', required: false, desc: "Only return rules targeting this subject type." },
+                    { name: "restrictionType", type: '"warning" | "rate_limit" | "throttle" | "block"', required: false, desc: "Only return rules with this restriction action." },
+                    { name: "enabled", type: "boolean", required: false, desc: "true → active rules only; false → disabled rules only." },
+                  ]}
+                />
+
+                <h4 className="mt-6 text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+                  Type signatures
+                </h4>
+                <CodeBlock>{`// Shared building block
+interface TimeWindow {
+  count: number;
+  unit: "minute" | "hour" | "day" | "month";
+}
+
+// What causes the rule to fire
+type RuleTriggerConfig =
+  | { type: "token_limit";       tokens: number;  window: TimeWindow }
+  | { type: "cost_limit";        costUsd: number; window: TimeWindow }
+  | { type: "policy_violation";  policyId: string }
+  | { type: "inactivity";        duration: TimeWindow };
+
+// What happens when it fires
+type RuleRestrictionConfig =
+  | { type: "warning" }
+  | { type: "rate_limit"; maxRequests: number; window: TimeWindow }
+  | { type: "throttle";   delayMs: number }
+  | { type: "block" };
+
+interface Rule {
+  id: string;
+  name: string;
+  enabled: boolean;
+  subject: { type: "user" | "group" | "feature"; ids: string[] };
+  trigger: RuleTriggerConfig;
+  restriction: RuleRestrictionConfig;
+  notifications: {
+    webhookUrl?: string;
+    injectResponse?: boolean;
+    responseMessage?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+  lastTriggeredAt?: string | null;
+}`}</CodeBlock>
+
+                <h4 className="mt-6 text-sm font-semibold uppercase tracking-wider text-[var(--fg-muted)]/60">
+                  Example response
+                </h4>
+                <CodeBlock lang="json">{`[
+  {
+    "id": "rule_01jq3abc",
+    "name": "Cap token usage per hour",
+    "enabled": true,
+    "subject": { "type": "user", "ids": [] },
+    "trigger": { "type": "token_limit", "tokens": 50000, "window": { "count": 1, "unit": "hour" } },
+    "restriction": { "type": "rate_limit", "maxRequests": 10, "window": { "count": 1, "unit": "hour" } },
+    "notifications": { "injectResponse": true, "responseMessage": "Hourly token limit reached." },
+    "createdAt": "2026-03-01T10:00:00Z",
+    "updatedAt": "2026-03-05T14:22:00Z",
+    "lastTriggeredAt": "2026-03-07T09:11:00Z"
+  },
+  {
+    "id": "rule_01jq3xyz",
+    "name": "Block on high spend",
+    "enabled": true,
+    "subject": { "type": "user", "ids": [] },
+    "trigger": { "type": "cost_limit", "costUsd": 50, "window": { "count": 1, "unit": "month" } },
+    "restriction": { "type": "block" },
+    "notifications": { "injectResponse": true, "responseMessage": "Monthly budget exceeded." },
+    "createdAt": "2026-03-02T08:00:00Z",
+    "updatedAt": "2026-03-02T08:00:00Z",
+    "lastTriggeredAt": null
+  }
+]`}</CodeBlock>
+              </div>
+
               {/* Putting it all together */}
               <div className="mt-14 rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-6">
                 <h3 className="font-semibold text-[var(--fg)]">Putting it together</h3>
@@ -605,7 +722,7 @@ interface SdkCheckResponse {
   messages: { role: string; content: string }[],
 ) {
   // 1. Check before the request
-  const check = await tokenist.sdk.check({
+  const check = await tokenist.check({
     userId,
     model: "gpt-4o",
     requestType: "chat",
@@ -622,7 +739,7 @@ interface SdkCheckResponse {
   const latencyMs = Date.now() - start;
 
   // 3. Record usage
-  await tokenist.sdk.record({
+  await tokenist.record({
     userId,
     model: "gpt-4o",
     requestType: "chat",
@@ -633,7 +750,7 @@ interface SdkCheckResponse {
   });
 
   // 4. Log full payload
-  await tokenist.sdk.log({
+  await tokenist.log({
     model: "gpt-4o",
     request: { messages },
     response,
@@ -646,6 +763,7 @@ interface SdkCheckResponse {
                 </div>
               </div>
             </section>
+
           </div>
         </div>
       </main>
